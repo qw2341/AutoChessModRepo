@@ -1,0 +1,23 @@
+{
+  "AutoChessMod:OptionsMenu": {
+    "TEXT": [
+      ""
+    ]
+  },
+  "AutoChessMod:UpgradeMayhemButton": {
+    "TEXT": [
+      "升级乱战层数",
+      "需要 ",
+      " 金币",
+      "花费 "
+    ]
+  },
+  "AutoChessMod:UpgradeScryButton": {
+    "TEXT": [
+      "升级预见层数",
+      "需要 ",
+      " 金币",
+      "花费 "
+    ]
+  }
+}

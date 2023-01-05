@@ -1,0 +1,23 @@
+{
+  "AutoChessMod:OptionsMenu": {
+    "TEXT": [
+      ""
+    ]
+  },
+  "AutoChessMod:UpgradeMayhemButton": {
+    "TEXT": [
+      "Upgrade Mayhem",
+      "Need ",
+      " Gold",
+      "Cost "
+    ]
+  },
+  "AutoChessMod:UpgradeScryButton": {
+    "TEXT": [
+      "Upgrade Scry",
+      "Need ",
+      " Gold",
+      "Cost "
+    ]
+  }
+}
