@@ -6,6 +6,7 @@
 
     <groupId>com.evacipated.cardcrawl.mod</groupId>
     <artifactId>AutoChessMod</artifactId>
+    <name>AutoChess Mod</name>
     <version>0.0.1</version>
     <description>Autochess.</description>
 
