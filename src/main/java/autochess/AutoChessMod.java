@@ -3,10 +3,7 @@ package autochess;
 import autochess.patches.CardLevelPatch;
 import autochess.relics.ChessPiece;
 import autochess.savables.ChessSave;
-import basemod.BaseMod;
-import basemod.ModLabeledButton;
-import basemod.ModPanel;
-import basemod.ModTextPanel;
+import basemod.*;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -23,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,7 +55,6 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String DEFAULT_UPGRADE_SCRY_PENALTY_KEY = "dScryUpPen";
     public static int defaultScryUpgradePenalty = 50;
 
-    ModTextPanel modTextPanel;
     ModPanel settingsPanel;
 
     public AutoChessMod() {
@@ -138,104 +135,108 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(makeID("OptionsMenu"));
         String[] SettingText = UIStrings.TEXT;
 
-        modTextPanel = new ModTextPanel();
 
-
-        ModLabeledButton dMayhemStackButton = new ModLabeledButton(SettingText[0],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemStacks), String.valueOf(defaultMayhemStacks),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_MAYHEM_STACK_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dMayhemSliderLabel = new ModLabel(SettingText[0],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dMayhemSliderLabel);
+        ModMinMaxSlider dMayhemSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,10,defaultMayhemStacks,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultMayhemStacks = iVal;
+            try {
+                config.setInt(DEFAULT_MAYHEM_STACK_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dMayhemStackButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dMayhemSlider);
 
-        ModLabeledButton dScryStackButton = new ModLabeledButton(SettingText[2],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultScryStacks), String.valueOf(defaultScryStacks),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_SCRY_STACK_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dScrySliderLabel = new ModLabel(SettingText[1],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dScrySliderLabel);
+        ModMinMaxSlider dScrySlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,10,defaultScryStacks,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultScryStacks = iVal;
+            try {
+                config.setInt(DEFAULT_SCRY_STACK_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dScryStackButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dScrySlider);
 
-        ModLabeledButton dMayUpCostButton = new ModLabeledButton(SettingText[3],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemUpgradeCost), String.valueOf(defaultMayhemUpgradeCost),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dMayhemCostSliderLabel = new ModLabel(SettingText[2],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dMayhemCostSliderLabel);
+        ModMinMaxSlider dMayhemCostSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultMayhemUpgradeCost,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultMayhemUpgradeCost = iVal;
+            try {
+                config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dMayUpCostButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dMayhemCostSlider);
 
-        ModLabeledButton dScryUpCostButton = new ModLabeledButton(SettingText[4],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultScryUpgradeCost), String.valueOf(defaultScryUpgradeCost),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_UPGRADE_SCRY_COST_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dScryCostSliderLabel = new ModLabel(SettingText[3],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dScryCostSliderLabel);
+        ModMinMaxSlider dScryCostSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultScryUpgradeCost,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultScryUpgradeCost = iVal;
+            try {
+                config.setInt(DEFAULT_UPGRADE_SCRY_COST_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dScryUpCostButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dScryCostSlider);
 
-        ModLabeledButton dMayUpPenButton = new ModLabeledButton(SettingText[5],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemUpgradePenalty), String.valueOf(defaultMayhemUpgradePenalty),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dMayhemCostPenSliderLabel = new ModLabel(SettingText[4],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dMayhemCostPenSliderLabel);
+        ModMinMaxSlider dMayhemCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultMayhemUpgradePenalty,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultMayhemUpgradePenalty = iVal;
+            try {
+                config.setInt(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dMayUpPenButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dMayhemCostPenSlider);
 
-        ModLabeledButton dScryUpPenButton = new ModLabeledButton(SettingText[6],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
-            modTextPanel.show(settingsPanel,String.valueOf(defaultScryUpgradePenalty), String.valueOf(defaultScryUpgradePenalty),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
-                try {
-                    int num = Integer.parseInt(ModTextPanel.textField);
-                    if(num >= 0) {
-                        config.setInt(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, num);
-                        config.save();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        ModLabel dScryCostPenSliderLabel = new ModLabel(SettingText[5],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(dScryCostPenSliderLabel);
+        ModMinMaxSlider dScryCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultScryUpgradePenalty,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            defaultScryUpgradePenalty = iVal;
+            try {
+                config.setInt(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        settingsPanel.addUIElement(dScryUpPenButton);
         settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(dScryCostPenSlider);
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
     }
@@ -298,6 +299,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public String receiveCreateCardDescription(String s, AbstractCard abstractCard) {
-        return s + " NL +" + CardLevelPatch.getCardLevel(abstractCard);
+        int level = CardLevelPatch.getCardLevel(abstractCard);
+        if(level > 5) return s + " NL ★" + level;
+        else if(level > 1) return s + " NL " + StringUtils.repeat('★',level);
+        else return s;
     }
 }
