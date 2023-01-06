@@ -1,7 +1,10 @@
 package autochess;
 
 import autochess.patches.CardLevelPatch;
+import autochess.patches.CustomRewardPatch;
 import autochess.relics.ChessPiece;
+import autochess.rewards.MayhemReward;
+import autochess.rewards.ScryReward;
 import autochess.savables.ChessSave;
 import autochess.util.TextureLoader;
 import basemod.*;
@@ -20,6 +23,11 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.rewards.RewardItem;
+import com.megacrit.cardcrawl.rewards.RewardSave;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, PostBattleSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -44,12 +52,12 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String DEFAULT_MAYHEM_STACK_KEY = "dMayhemStacks";
     public static int defaultMayhemStacks = 5;
     public static final String DEFAULT_SCRY_STACK_KEY = "dScryStacks";
-    public static int defaultScryStacks = 2;
+    public static int defaultScryStacks = 5;
 
     public static final String DEFAULT_UPGRADE_MAYHEM_COST_KEY = "dMayUpCost";
     public static int defaultMayhemUpgradeCost = 500;
     public static final String DEFAULT_UPGRADE_SCRY_COST_KEY = "dScryUpCost";
-    public static int defaultScryUpgradeCost = 200;
+    public static int defaultScryUpgradeCost = 100;
 
     public static final String DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY = "dMayUpPen";
     public static int defaultMayhemUpgradePenalty = 100;
@@ -60,13 +68,14 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     public AutoChessMod() {
         logger.info("Subscribe to BaseMod hooks");
-
         BaseMod.subscribe(this);
-
+        logger.info("Done subscribing");
+        logger.info("Adding save fields");
         BaseMod.addSaveField(CHESS_SAVE_KEY, new ChessSave());
 
+        ChessSave.restoreDefault();
+        logger.info("Done adding save fields");
 
-        logger.info("Done subscribing");
 
         logger.info("Adding mod settings");
         theDefaultDefaultSettings.setProperty(DEFAULT_MAYHEM_STACK_KEY, String.valueOf(defaultMayhemStacks));
@@ -240,6 +249,11 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingsPanel.addUIElement(dScryCostPenSlider);
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
+        
+        logger.info("Adding custom rewards");
+        BaseMod.registerCustomReward(CustomRewardPatch.ACM_MAYHEM_REWARD,rewardSave -> new MayhemReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((MayhemReward) customReward).amount, 0));
+        BaseMod.registerCustomReward(CustomRewardPatch.ACM_SCRY_REWARD,rewardSave -> new ScryReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((ScryReward) customReward).amount, 0));
+        logger.info("Done adding custom rewards");
     }
 
 
@@ -304,5 +318,16 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         if(level > 5) return s + " NL ★" + level;
         else if(level > 1) return s + " NL " + StringUtils.repeat('★',level);
         else return s;
+    }
+
+    @Override
+    public void receivePostBattle(AbstractRoom abstractRoom) {
+        if(abstractRoom instanceof MonsterRoomBoss) {
+            abstractRoom.rewards.add(new MayhemReward(1));
+            abstractRoom.rewards.add(new ScryReward(2));
+        }
+        if(abstractRoom instanceof MonsterRoom) {
+            abstractRoom.rewards.add(new RewardItem());
+        }
     }
 }

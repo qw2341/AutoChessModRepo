@@ -24,5 +24,12 @@
       " Gold",
       "Cost "
     ]
+  },
+  "AutoChessMod:RewardButton": {
+    "TEXT": [
+      "Gain ",
+      " Mayhem.",
+      " Scry."
+    ]
   }
 }

@@ -24,5 +24,12 @@
       " 金币",
       "花费 "
     ]
+  },
+  "AutoChessMod:RewardButton": {
+    "TEXT": [
+      "获得 ",
+      " 乱战。",
+      " 预见。"
+    ]
   }
 }

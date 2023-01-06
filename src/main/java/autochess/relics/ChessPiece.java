@@ -17,10 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Integer,Integer>> {
 
@@ -28,6 +25,12 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     private static final Texture IMG = TextureLoader.getTexture(AutoChessMod.makeRelicPath("ChessPiece.png"));
     private static final Texture OUTLINE = TextureLoader.getTexture(AutoChessMod.makeRelicOutlinePath("ChessPiece.png"));
 
+    static Set<AbstractCard.CardType> exceptionTypeSet;
+    static {
+        exceptionTypeSet = new HashSet<>();
+        exceptionTypeSet.add(AbstractCard.CardType.STATUS);
+        exceptionTypeSet.add(AbstractCard.CardType.CURSE);
+    }
 
 
     public ChessPiece() {
@@ -82,6 +85,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         String idLevel;
         for (AbstractCard c : searchPile)
         {
+            if(exceptionTypeSet.contains(c.type)) continue;
             idLevel = c.cardID + CardLevelPatch.getCardLevel(c);
             if (lump.contains(idLevel)) dupes.add(c);
             else lump.add(idLevel);
@@ -189,4 +193,11 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
             modifyCard(AbstractDungeon.player.masterDeck.group.get(i), sav.get(i));
         }
     }
+
+    @Override
+    public int changeNumberOfCardsInReward(int numberOfCards) {
+        return numberOfCards + 2;
+    }
+
+
 }
