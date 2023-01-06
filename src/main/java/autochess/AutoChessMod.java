@@ -3,10 +3,10 @@ package autochess;
 import autochess.patches.CardLevelPatch;
 import autochess.relics.ChessPiece;
 import autochess.savables.ChessSave;
+import autochess.util.TextureLoader;
 import basemod.*;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -30,6 +30,7 @@ import java.util.Properties;
 public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
+    private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
 
     public static SpireConfig config = null;
     public static Properties theDefaultDefaultSettings = new Properties();
@@ -124,7 +125,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receivePostInitialize() {
         settingsPanel = new ModPanel();
-        Texture badgeTexture = ImageMaster.INTENT_ATK_7;
+        Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
 
         float startingXPos = 350.0f;
         float settingXPos = startingXPos;
