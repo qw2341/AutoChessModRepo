@@ -2,6 +2,7 @@ package autochess.relics;
 
 import autochess.AutoChessMod;
 import autochess.patches.CardLevelPatch;
+import autochess.savables.ChessSave;
 import autochess.util.TextureLoader;
 import autochess.vfx.ShowTripleAndObtainEffect;
 import basemod.abstracts.CustomRelic;
@@ -27,23 +28,21 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     private static final Texture IMG = TextureLoader.getTexture(AutoChessMod.makeRelicPath("ChessPiece.png"));
     private static final Texture OUTLINE = TextureLoader.getTexture(AutoChessMod.makeRelicOutlinePath("ChessPiece.png"));
 
-    public int numCardsToCombine = 3;
 
 
     public ChessPiece() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK);
-        this.numCardsToCombine = 3;
     }
 
     @Override
     public String getUpdatedDescription() {
-        return DESCRIPTIONS[0] + this.numCardsToCombine + DESCRIPTIONS[1];
+        return DESCRIPTIONS[0] + ChessSave.getNumCardsForTriple() + DESCRIPTIONS[1];
     }
 
     @Override
     public void onMasterDeckChange() {
 
-        ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.masterDeck.group,this.numCardsToCombine);
+        ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.masterDeck.group,ChessSave.getNumCardsForTriple());
         AutoChessMod.logger.info("Logging dupe Card: ");
         StringBuilder sb = new StringBuilder();
         for (AbstractCard card : dupeCards) {
@@ -57,14 +56,14 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         ArrayList<AbstractCard> cardsToRemove = new ArrayList<>();
         int i = 0;
         for(AbstractCard c : AbstractDungeon.player.masterDeck.group) {
-            if(tierAndIdCheck(c,dupe) && i < this.numCardsToCombine) {
+            if(tierAndIdCheck(c,dupe) && i < ChessSave.getNumCardsForTriple()) {
                 cardsToRemove.add(c);
                 i++;
             }
-            if(i>=this.numCardsToCombine) break;
+            if(i>=ChessSave.getNumCardsForTriple()) break;
         }
 
-        if(cardsToRemove.size() < this.numCardsToCombine) return;
+        if(cardsToRemove.size() < ChessSave.getNumCardsForTriple()) return;
 
         for (AbstractCard cardToRemove: cardsToRemove) {
             AbstractDungeon.player.masterDeck.group.remove(cardToRemove);
@@ -116,19 +115,19 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     public void onRefreshHand() {
         if(AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp) {
             if((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
-                if(AbstractDungeon.player.hand.size() >= this.numCardsToCombine) {
-                    ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.hand.group,this.numCardsToCombine);
+                if(AbstractDungeon.player.hand.size() >= ChessSave.getNumCardsForTriple()) {
+                    ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.hand.group,ChessSave.getNumCardsForTriple());
                     if(dupeCards.isEmpty()) return;
 
                     AbstractCard dupe = dupeCards.get(0);
                     ArrayList<AbstractCard> cardsToRemove = new ArrayList<>();
                     int i = 0;
                     for(AbstractCard c : AbstractDungeon.player.hand.group) {
-                        if(tierAndIdCheck(c,dupe) && i < this.numCardsToCombine) {
+                        if(tierAndIdCheck(c,dupe) && i < ChessSave.getNumCardsForTriple()) {
                             cardsToRemove.add(c);
                             i++;
                         }
-                        if(i>=this.numCardsToCombine) break;
+                        if(i>=ChessSave.getNumCardsForTriple()) break;
                     }
 
                     for (AbstractCard cardToRemove: cardsToRemove) {
