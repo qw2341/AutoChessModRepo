@@ -72,7 +72,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
             AbstractDungeon.player.masterDeck.group.remove(cardToRemove);
         }
 
-        AbstractDungeon.effectsQueue.add(new ShowTripleAndObtainEffect(cardsToRemove, CardGroup.CardGroupType.MASTER_DECK));
+        AbstractDungeon.topLevelEffectsQueue.add(new ShowTripleAndObtainEffect(cardsToRemove, CardGroup.CardGroupType.MASTER_DECK));
     }
 
     public static ArrayList<AbstractCard> getDuplicates(ArrayList<AbstractCard> searchPile, int numCopy) {
@@ -85,7 +85,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         String idLevel;
         for (AbstractCard c : searchPile)
         {
-            if(exceptionTypeSet.contains(c.type)) continue;
+            if(exceptionTypeSet.contains(c.type) || c.rarity == AbstractCard.CardRarity.BASIC) continue;
             idLevel = c.cardID + CardLevelPatch.getCardLevel(c);
             if (lump.contains(idLevel)) dupes.add(c);
             else lump.add(idLevel);

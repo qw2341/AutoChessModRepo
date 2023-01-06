@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, PostBattleSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -63,6 +63,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static int defaultMayhemUpgradePenalty = 100;
     public static final String DEFAULT_UPGRADE_SCRY_PENALTY_KEY = "dScryUpPen";
     public static int defaultScryUpgradePenalty = 50;
+
+    public static char levelSymbol;
 
     ModPanel settingsPanel;
 
@@ -133,6 +135,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receivePostInitialize() {
+        logger.info("========================= Adding Auto Chess Mod Badge  =========================");
+
         settingsPanel = new ModPanel();
         Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
 
@@ -249,7 +253,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingsPanel.addUIElement(dScryCostPenSlider);
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
-        
+        logger.info("========================= Done Adding Auto Chess Mod Badge  =========================");
+
         logger.info("Adding custom rewards");
         BaseMod.registerCustomReward(CustomRewardPatch.ACM_MAYHEM_REWARD,rewardSave -> new MayhemReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((MayhemReward) customReward).amount, 0));
         BaseMod.registerCustomReward(CustomRewardPatch.ACM_SCRY_REWARD,rewardSave -> new ScryReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((ScryReward) customReward).amount, 0));
@@ -271,10 +276,15 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receiveEditStrings() {
         loadLocStrings("eng");
-        if (!languageSupport().equals("eng"))
+        if (!languageSupport().equals("eng")) {
             loadLocStrings(languageSupport());
+        }
+
+         levelSymbol = languageSupport().equals("eng") ? '+' : '★';
+
         BaseMod.loadCustomStringsFile(RelicStrings.class,
                 getModID() + "Resources/localization/"+languageSupport()+"/Relic-Strings.json");
+
     }
 
     public static String languageSupport() {
@@ -315,13 +325,13 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public String receiveCreateCardDescription(String s, AbstractCard abstractCard) {
         int level = CardLevelPatch.getCardLevel(abstractCard);
-        if(level > 5) return s + " NL ★" + level;
-        else if(level > 1) return s + " NL " + StringUtils.repeat('★',level);
+        if(level > 5) return s + " NL " + levelSymbol + level;
+        else if(level > 1) return s + " NL " + StringUtils.repeat(levelSymbol,level);
         else return s;
     }
 
     @Override
-    public void receivePostBattle(AbstractRoom abstractRoom) {
+    public void receiveOnBattleStart(AbstractRoom abstractRoom) {
         if(abstractRoom instanceof MonsterRoomBoss) {
             abstractRoom.rewards.add(new MayhemReward(1));
             abstractRoom.rewards.add(new ScryReward(2));

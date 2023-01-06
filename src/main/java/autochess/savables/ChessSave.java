@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class ChessSave implements CustomSavable<HashMap<String,Integer>> {
 
-    public static HashMap<String,Integer> save = new HashMap<>(4);
+    public static HashMap<String,Integer> save = new HashMap<>(5);
     public static final String MAYHEM_STACK_KEY = "mayhemStacks";
     public static final String SCRY_STACK_KEY = "scryStacks";
     public static final String MAYHEM_COST_KEY = "mayhemCosts";

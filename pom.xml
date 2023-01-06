@@ -7,8 +7,8 @@
     <groupId>com.evacipated.cardcrawl.mod</groupId>
     <artifactId>AutoChessMod</artifactId>
     <name>AutoChess Mod</name>
-    <version>0.0.2</version>
-    <description>Autochess.</description>
+    <version>0.0.3</version>
+    <description>Autochesses the Spire.</description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

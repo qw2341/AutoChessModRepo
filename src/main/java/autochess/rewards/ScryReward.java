@@ -16,7 +16,7 @@ public class ScryReward extends CustomReward {
     public int amount;
 
     public ScryReward(int amount) {
-        super(AbstractPower.atlas.findRegion("48/wireheading"), TEXT[0] + amount + TEXT[2], CustomRewardPatch.ACM_MAYHEM_REWARD);
+        super(AbstractPower.atlas.findRegion("48/wireheading"), TEXT[0] + amount + TEXT[2], CustomRewardPatch.ACM_SCRY_REWARD);
         this.amount = amount;
     }
 
@@ -26,7 +26,7 @@ public class ScryReward extends CustomReward {
 
     @Override
     public boolean claimReward() {
-        ChessSave.setMayhemStacks(ChessSave.getMayhemStacks() + amount);
+        ChessSave.setScryStacks(ChessSave.getScryStacks() + amount);
         return true;
     }
 }

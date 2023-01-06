@@ -58,7 +58,7 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
             identifySpawnLocation();
 
             for (AbstractCard card : cards) {
-                AbstractDungeon.effectsQueue.add(new CardPoofEffect(card.target_x, card.target_y));
+                AbstractDungeon.topLevelEffectsQueue.add(new CardPoofEffect(card.target_x, card.target_y));
                 card.drawScale = 0.01F;
                 card.targetDrawScale = 1.0F;
             }
@@ -98,13 +98,13 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
             switch (this.destination) {
 
                 case DRAW_PILE:
-                    AbstractDungeon.effectsQueue.add(new ShowCardAndAddToDrawPileEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F, false));
+                    AbstractDungeon.topLevelEffectsQueue.add(new ShowCardAndAddToDrawPileEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F, false));
                     break;
                 case HAND:
-                    AbstractDungeon.effectsQueue.add(new ShowCardAndAddToHandEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F));
+                    AbstractDungeon.topLevelEffectsQueue.add(new ShowCardAndAddToHandEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F));
                     break;
                 case DISCARD_PILE:
-                    AbstractDungeon.effectsQueue.add(new ShowCardAndAddToDiscardEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F));
+                    AbstractDungeon.topLevelEffectsQueue.add(new ShowCardAndAddToDiscardEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F));
                     break;
                 case EXHAUST_PILE:
                     break;
@@ -112,7 +112,7 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
                 case CARD_POOL:
                 case UNSPECIFIED:
                 default:
-                    AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F, false));
+                    AbstractDungeon.topLevelEffectsQueue.add(new ShowCardAndObtainEffect(this.cardToObtain,Settings.WIDTH * 0.5F, Settings.HEIGHT * 0.5F, false));
             }
 
         }
