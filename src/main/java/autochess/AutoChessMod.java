@@ -1,18 +1,23 @@
 package autochess;
 
+import autochess.patches.CardLevelPatch;
+import autochess.relics.ChessPiece;
 import autochess.savables.ChessSave;
 import basemod.BaseMod;
 import basemod.ModPanel;
-import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.PostDungeonInitializeSubscriber;
-import basemod.interfaces.PostInitializeSubscriber;
+import basemod.helpers.RelicType;
+import basemod.interfaces.*;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
 
@@ -36,7 +41,7 @@ public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscr
     public static final String DEFAULT_MAYHEM_STACK_KEY = "dMayhemStacks";
     public static int defaultMayhemStacks = 3;
     public static final String DEFAULT_SCRY_STACK_KEY = "dScryStacks";
-    public static int defaultScryStacks = 1;
+    public static int defaultScryStacks = 2;
 
     public static final String DEFAULT_UPGRADE_MAYHEM_COST_KEY = "dMayUpCost";
     public static int defaultMayhemUpgradeCost = 500;
@@ -104,6 +109,14 @@ public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscr
         return getModID() + "Resources/images/ui/campfire/" + resourcePath;
     }
 
+    public static String makeRelicPath(String resourcePath) {
+        return getModID() + "Resources/images/relics/" + resourcePath;
+    }
+
+    public static String makeRelicOutlinePath(String resourcePath) {
+        return getModID() + "Resources/images/relics/outline/" + resourcePath;
+    }
+
     @Override
     public void receivePostInitialize() {
         ModPanel settingsPanel = new ModPanel();
@@ -125,7 +138,11 @@ public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscr
     public void receivePostDungeonInitialize() {
         ChessSave.restoreDefault();
 
+        if(RelicLibrary.isARelic(ChessPiece.ID)&&!AbstractDungeon.player.hasRelic(ChessPiece.ID)) RelicLibrary.getRelic(ChessPiece.ID).makeCopy().instantObtain();
+
+        if(AbstractDungeon.player.hasRelic(ChessPiece.ID)) AbstractDungeon.player.getRelic(ChessPiece.ID).onMasterDeckChange();
         AbstractDungeon.player.energy.energyMaster = 0;
+        AbstractDungeon.player.masterHandSize = 0;
     }
 
     @Override
@@ -133,6 +150,8 @@ public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscr
         loadLocStrings("eng");
         if (!languageSupport().equals("eng"))
             loadLocStrings(languageSupport());
+        BaseMod.loadCustomStringsFile(RelicStrings.class,
+                getModID() + "Resources/localization/"+languageSupport()+"/Relic-Strings.json");
     }
 
     public static String languageSupport() {
@@ -155,5 +174,23 @@ public class AutoChessMod implements EditStringsSubscriber, PostInitializeSubscr
 
     private void loadLocStrings(String language) {
         BaseMod.loadCustomStringsFile(UIStrings.class, getModID() + "Resources/localization/" + language + "/UI-Strings.json");
+    }
+
+    @Override
+    public void receivePreUpdate() {
+//        if(AbstractDungeon.isPlayerInDungeon() && ) {
+//
+//        }
+    }
+
+
+    @Override
+    public void receiveEditRelics() {
+        BaseMod.addRelic(new ChessPiece(), RelicType.SHARED);
+    }
+
+    @Override
+    public String receiveCreateCardDescription(String s, AbstractCard abstractCard) {
+        return s + " NL +" + CardLevelPatch.getCardLevel(abstractCard);
     }
 }

@@ -13,8 +13,8 @@ import com.megacrit.cardcrawl.powers.watcher.ForesightPower;
 public class StartBattlePatch {
     @SpirePrefixPatch
     public static void Prefix(AbstractPlayer __instance) {
-        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction(__instance,__instance, new MayhemPower(__instance, ChessSave.getMayhemStacks())));
         AbstractDungeon.actionManager.addToTop(new ApplyPowerAction(__instance,__instance, new ForesightPower(__instance, ChessSave.getScryStacks())));
+        AbstractDungeon.actionManager.addToTop(new ApplyPowerAction(__instance,__instance, new MayhemPower(__instance, ChessSave.getMayhemStacks())));
 
     }
 }

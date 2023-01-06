@@ -1,0 +1,10 @@
+{
+  "AutoChessMod:ChessPiece": {
+    "NAME": "Chess Piece",
+    "FLAVOR": "Yet another yet another autobattler",
+    "DESCRIPTIONS": [
+      "Obtaining #b",
+      " cards of the same tier will give you a #ycombined card with doubled stats"
+    ]
+  }
+}

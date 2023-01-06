@@ -1,0 +1,10 @@
+{
+  "AutoChessMod:ChessPiece": {
+    "NAME": "棋子",
+    "FLAVOR": "啊哈~三连，这是你的奖励",
+    "DESCRIPTIONS": [
+      "获得 #b",
+      " 个同级别卡牌会合成一张属性翻倍的卡牌"
+    ]
+  }
+}
