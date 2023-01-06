@@ -1,7 +1,13 @@
 {
   "AutoChessMod:OptionsMenu": {
     "TEXT": [
-      ""
+      "设定初始乱战层数",
+      "请输入数字(>=0)",
+      "设定初始预见层数",
+      "设定乱战升级费用",
+      "设定预见升级费用",
+      "设定乱战升级增费",
+      "设定预见升级增费"
     ]
   },
   "AutoChessMod:UpgradeMayhemButton": {

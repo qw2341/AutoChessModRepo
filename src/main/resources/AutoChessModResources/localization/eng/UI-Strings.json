@@ -1,7 +1,13 @@
 {
   "AutoChessMod:OptionsMenu": {
     "TEXT": [
-      ""
+      "Set Starting Mayhem Stack",
+      "Please enter an integer(>=0)",
+      "Set Starting Scry Stack",
+      "Set Mayhem Upgrade Cost",
+      "Set Scry Upgrade Cost",
+      "Set Mayhem Upgrade Cost Penalty",
+      "Set Scry Upgrade Cost Penalty"
     ]
   },
   "AutoChessMod:UpgradeMayhemButton": {

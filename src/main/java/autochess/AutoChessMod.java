@@ -4,7 +4,9 @@ import autochess.patches.CardLevelPatch;
 import autochess.relics.ChessPiece;
 import autochess.savables.ChessSave;
 import basemod.BaseMod;
+import basemod.ModLabeledButton;
 import basemod.ModPanel;
+import basemod.ModTextPanel;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -13,8 +15,10 @@ import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.RelicStrings;
@@ -39,7 +43,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String CHESS_SAVE_KEY = "chessSave";
 
     public static final String DEFAULT_MAYHEM_STACK_KEY = "dMayhemStacks";
-    public static int defaultMayhemStacks = 3;
+    public static int defaultMayhemStacks = 5;
     public static final String DEFAULT_SCRY_STACK_KEY = "dScryStacks";
     public static int defaultScryStacks = 2;
 
@@ -52,6 +56,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static int defaultMayhemUpgradePenalty = 100;
     public static final String DEFAULT_UPGRADE_SCRY_PENALTY_KEY = "dScryUpPen";
     public static int defaultScryUpgradePenalty = 50;
+
+    ModTextPanel modTextPanel;
+    ModPanel settingsPanel;
 
     public AutoChessMod() {
         logger.info("Subscribe to BaseMod hooks");
@@ -119,7 +126,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receivePostInitialize() {
-        ModPanel settingsPanel = new ModPanel();
+        settingsPanel = new ModPanel();
         Texture badgeTexture = ImageMaster.INTENT_ATK_7;
 
         float startingXPos = 350.0f;
@@ -128,7 +135,107 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         float settingYPos = 750.0f;
         float lineSpacing = 50.0f;
 
+        UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(makeID("OptionsMenu"));
+        String[] SettingText = UIStrings.TEXT;
 
+        modTextPanel = new ModTextPanel();
+
+
+        ModLabeledButton dMayhemStackButton = new ModLabeledButton(SettingText[0],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemStacks), String.valueOf(defaultMayhemStacks),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_MAYHEM_STACK_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dMayhemStackButton);
+        settingYPos -= lineSpacing;
+
+        ModLabeledButton dScryStackButton = new ModLabeledButton(SettingText[2],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultScryStacks), String.valueOf(defaultScryStacks),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_SCRY_STACK_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dScryStackButton);
+        settingYPos -= lineSpacing;
+
+        ModLabeledButton dMayUpCostButton = new ModLabeledButton(SettingText[3],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemUpgradeCost), String.valueOf(defaultMayhemUpgradeCost),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dMayUpCostButton);
+        settingYPos -= lineSpacing;
+
+        ModLabeledButton dScryUpCostButton = new ModLabeledButton(SettingText[4],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultScryUpgradeCost), String.valueOf(defaultScryUpgradeCost),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_UPGRADE_SCRY_COST_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dScryUpCostButton);
+        settingYPos -= lineSpacing;
+
+        ModLabeledButton dMayUpPenButton = new ModLabeledButton(SettingText[5],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultMayhemUpgradePenalty), String.valueOf(defaultMayhemUpgradePenalty),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dMayUpPenButton);
+        settingYPos -= lineSpacing;
+
+        ModLabeledButton dScryUpPenButton = new ModLabeledButton(SettingText[6],settingXPos,settingYPos,Settings.CREAM_COLOR,Settings.GOLD_COLOR, FontHelper.charDescFont, settingsPanel, button -> {
+            modTextPanel.show(settingsPanel,String.valueOf(defaultScryUpgradePenalty), String.valueOf(defaultScryUpgradePenalty),SettingText[1], onCancelPanel -> {}, onConfirmPanel -> {
+                try {
+                    int num = Integer.parseInt(ModTextPanel.textField);
+                    if(num >= 0) {
+                        config.setInt(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, num);
+                        config.save();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+        settingsPanel.addUIElement(dScryUpPenButton);
+        settingYPos -= lineSpacing;
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
     }
