@@ -85,7 +85,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         String idLevel;
         for (AbstractCard c : searchPile)
         {
-            if(exceptionTypeSet.contains(c.type) || c.rarity == AbstractCard.CardRarity.BASIC) continue;
+            if(exceptionTypeSet.contains(c.type) || (!AutoChessMod.enableBasicCardTriple && c.rarity == AbstractCard.CardRarity.BASIC)) continue;
             idLevel = c.cardID + CardLevelPatch.getCardLevel(c);
             if (lump.contains(idLevel)) dupes.add(c);
             else lump.add(idLevel);
@@ -196,7 +196,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
     @Override
     public int changeNumberOfCardsInReward(int numberOfCards) {
-        return numberOfCards + 2;
+        return numberOfCards + AutoChessMod.bonusCardDropSelection;
     }
 
 

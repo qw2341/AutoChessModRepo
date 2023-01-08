@@ -6,7 +6,10 @@
       "Set Mayhem Upgrade Cost",
       "Set Scry Upgrade Cost",
       "Set Mayhem Upgrade Cost Penalty",
-      "Set Scry Upgrade Cost Penalty"
+      "Set Scry Upgrade Cost Penalty",
+      "Bonus Cards in Selection",
+      "Bonus Card Drops",
+      "Allow basic cards to triple"
     ]
   },
   "AutoChessMod:UpgradeMayhemButton": {

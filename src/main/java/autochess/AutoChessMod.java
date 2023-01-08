@@ -66,6 +66,15 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String DEFAULT_UPGRADE_SCRY_PENALTY_KEY = "dScryUpPen";
     public static int defaultScryUpgradePenalty = 50;
 
+    public static final String BONUS_CARD_DROP_SELECTION_KEY = "bCardDrops";
+    public static int bonusCardDropSelection = 2;
+
+    public static final String ENABLE_BONUS_CARD_DROP_KEY = "eBonusCards";
+    public static boolean enableBonusCardDrop = true;
+
+    public static final String ENABLE_BASIC_CARDS_TRIPLES_KEY = "eBasicCardsTriples";
+    public static boolean enableBasicCardTriple = false;
+
     public static char levelSymbol;
 
     ModPanel settingsPanel;
@@ -82,14 +91,15 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
 
         logger.info("Adding mod settings");
-        theDefaultDefaultSettings.setProperty(DEFAULT_MAYHEM_STACK_KEY, String.valueOf(defaultMayhemStacks));
-        theDefaultDefaultSettings.setProperty(DEFAULT_SCRY_STACK_KEY, String.valueOf(defaultScryStacks));
-        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_COST_KEY, String.valueOf(defaultMayhemUpgradeCost));
-        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_COST_KEY, String.valueOf(defaultScryUpgradeCost));
-        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, String.valueOf(defaultMayhemUpgradePenalty));
-        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, String.valueOf(defaultScryUpgradePenalty));
-
-
+        theDefaultDefaultSettings.setProperty(DEFAULT_MAYHEM_STACK_KEY, "5");
+        theDefaultDefaultSettings.setProperty(DEFAULT_SCRY_STACK_KEY, "5");
+        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_COST_KEY, "500");
+        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_COST_KEY, "100");
+        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, "100");
+        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, "50");
+        theDefaultDefaultSettings.setProperty(BONUS_CARD_DROP_SELECTION_KEY, "2");
+        theDefaultDefaultSettings.setProperty(ENABLE_BONUS_CARD_DROP_KEY, "TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_BASIC_CARDS_TRIPLES_KEY, "FALSE");
         try {
             config = new SpireConfig("autoChessMod", "autoChessConfig", theDefaultDefaultSettings);
             config.load();
@@ -100,8 +110,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             defaultScryUpgradeCost = config.getInt(DEFAULT_UPGRADE_SCRY_COST_KEY);
             defaultMayhemUpgradePenalty = config.getInt(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY);
             defaultScryUpgradePenalty = config.getInt(DEFAULT_UPGRADE_SCRY_PENALTY_KEY);
-
-
+            bonusCardDropSelection = config.getInt(BONUS_CARD_DROP_SELECTION_KEY);
+            enableBonusCardDrop = config.getBool(ENABLE_BONUS_CARD_DROP_KEY);
+            enableBasicCardTriple = config.getBool(ENABLE_BASIC_CARDS_TRIPLES_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,11 +153,12 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingsPanel = new ModPanel();
         Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
 
-        float startingXPos = 350.0f;
+        float startingXPos = 350.0f * Settings.scale;
         float settingXPos = startingXPos;
-        float xSpacing = 250.0f;
-        float settingYPos = 750.0f;
-        float lineSpacing = 50.0f;
+        float xSpacing = 300.0f * Settings.scale;
+        float startingYPos = 750.0f * Settings.yScale;
+        float settingYPos = startingYPos;
+        float lineSpacing = 50.0f * Settings.yScale;
 
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(makeID("OptionsMenu"));
         String[] SettingText = UIStrings.TEXT;
@@ -186,6 +198,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingYPos -= lineSpacing;
         settingsPanel.addUIElement(dScrySlider);
 
+        settingXPos += xSpacing;
+        settingYPos = startingYPos;
         ModLabel dMayhemCostSliderLabel = new ModLabel(SettingText[2],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
         settingYPos -= lineSpacing * 0.5F;
         settingsPanel.addUIElement(dMayhemCostSliderLabel);
@@ -206,7 +220,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         ModLabel dScryCostSliderLabel = new ModLabel(SettingText[3],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
         settingYPos -= lineSpacing * 0.5F;
         settingsPanel.addUIElement(dScryCostSliderLabel);
-        ModMinMaxSlider dScryCostSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultScryUpgradeCost,"x%.0f",settingsPanel,slider -> {
+        ModMinMaxSlider dScryCostSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,500,defaultScryUpgradeCost,"x%.0f",settingsPanel,slider -> {
             float fVal = slider.getValue();
             int iVal = Math.round(fVal);
             defaultScryUpgradeCost = iVal;
@@ -220,10 +234,12 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingYPos -= lineSpacing;
         settingsPanel.addUIElement(dScryCostSlider);
 
+        settingXPos += xSpacing;
+        settingYPos = startingYPos;
         ModLabel dMayhemCostPenSliderLabel = new ModLabel(SettingText[4],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
         settingYPos -= lineSpacing * 0.5F;
         settingsPanel.addUIElement(dMayhemCostPenSliderLabel);
-        ModMinMaxSlider dMayhemCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultMayhemUpgradePenalty,"x%.0f",settingsPanel,slider -> {
+        ModMinMaxSlider dMayhemCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,500,defaultMayhemUpgradePenalty,"x%.0f",settingsPanel,slider -> {
             float fVal = slider.getValue();
             int iVal = Math.round(fVal);
             defaultMayhemUpgradePenalty = iVal;
@@ -240,7 +256,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         ModLabel dScryCostPenSliderLabel = new ModLabel(SettingText[5],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
         settingYPos -= lineSpacing * 0.5F;
         settingsPanel.addUIElement(dScryCostPenSliderLabel);
-        ModMinMaxSlider dScryCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,1000,defaultScryUpgradePenalty,"x%.0f",settingsPanel,slider -> {
+        ModMinMaxSlider dScryCostPenSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,500,defaultScryUpgradePenalty,"x%.0f",settingsPanel,slider -> {
             float fVal = slider.getValue();
             int iVal = Math.round(fVal);
             defaultScryUpgradePenalty = iVal;
@@ -253,6 +269,50 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         });
         settingYPos -= lineSpacing;
         settingsPanel.addUIElement(dScryCostPenSlider);
+
+        settingXPos = startingXPos;
+        ModLabel bCardDropSelSliderLabel = new ModLabel(SettingText[6],settingXPos,settingYPos,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, label->{});
+        settingYPos -= lineSpacing * 0.5F;
+        settingsPanel.addUIElement(bCardDropSelSliderLabel);
+        ModMinMaxSlider bCardDropSelSlider = new ModMinMaxSlider("",settingXPos,settingYPos,0,5,bonusCardDropSelection,"x%.0f",settingsPanel,slider -> {
+            float fVal = slider.getValue();
+            int iVal = Math.round(fVal);
+            bonusCardDropSelection = iVal;
+            try {
+                config.setInt(BONUS_CARD_DROP_SELECTION_KEY, iVal);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(bCardDropSelSlider);
+
+        ModLabeledToggleButton bCardDropButton = new ModLabeledToggleButton(SettingText[7],settingXPos,settingYPos,Settings.CREAM_COLOR,FontHelper.charDescFont, enableBonusCardDrop,settingsPanel, label -> {},button -> {
+
+            enableBonusCardDrop = button.enabled;
+            try {
+                config.setBool(ENABLE_BONUS_CARD_DROP_KEY, enableBonusCardDrop);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(bCardDropButton);
+
+        ModLabeledToggleButton bCardTripleButton = new ModLabeledToggleButton(SettingText[8],settingXPos,settingYPos,Settings.CREAM_COLOR,FontHelper.charDescFont, enableBasicCardTriple,settingsPanel, label -> {},button -> {
+
+            enableBasicCardTriple = button.enabled;
+            try {
+                config.setBool(ENABLE_BASIC_CARDS_TRIPLES_KEY, enableBasicCardTriple);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(bCardTripleButton);
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         logger.info("========================= Done Adding Auto Chess Mod Badge  =========================");
@@ -339,7 +399,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             abstractRoom.rewards.add(new MayhemReward(1));
             abstractRoom.rewards.add(new ScryReward(2));
         }
-        if(abstractRoom instanceof MonsterRoom) {
+        if(enableBonusCardDrop && abstractRoom instanceof MonsterRoom) {
             abstractRoom.rewards.add(new RewardItem());
         }
     }

@@ -28,6 +28,7 @@ public class ZephrysLamp extends CustomRelic {
         int numToSet = ChessSave.getNumCardsForTriple() - 1;
         if (numToSet <2) numToSet = 2;
         ChessSave.setNumCardsForTriple(numToSet);
+        if(AbstractDungeon.player.hasRelic(ChessPiece.ID)) AbstractDungeon.player.getRelic(ChessPiece.ID).onMasterDeckChange();
     }
 
     @Override
