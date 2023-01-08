@@ -35,12 +35,17 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
 
     private CardGroup.CardGroupType destination;
 
+    private boolean middleOfAnimation;
+    private float halfDuration;
+
     public ShowTripleAndObtainEffect(ArrayList<AbstractCard> cards, CardGroup.CardGroupType destination) {
         this.cards = cards;
         this.destination = destination;
+        this.middleOfAnimation = false;
         if(cards.isEmpty()) {
             this.isDone = true;
             this.duration = 0.0F;
+            this.halfDuration = 0.0f;
         } else {
 
 
@@ -55,6 +60,7 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
             } else {
                 this.duration = EFFECT_DUR;
             }
+            this.halfDuration = this.duration / 2.0f;
             identifySpawnLocation();
 
             for (AbstractCard card : cards) {
@@ -75,11 +81,11 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
         int i = 1;
         int len = cards.size() + 1;
         for (AbstractCard card : cards) {
-            card.current_x = Settings.WIDTH * ((float)i/len);
-            card.current_y = Settings.HEIGHT * 0.5F;
-
-            card.target_x = Settings.WIDTH * 0.5F;
+            card.target_x = Settings.WIDTH * ((float)i/len);
             card.target_y = Settings.HEIGHT * 0.5F;
+            card.targetDrawScale = 1.0f;
+            //card.target_x = Settings.WIDTH * 0.5F;
+            //card.target_y = Settings.HEIGHT * 0.5F;
             i++;
         }
 
@@ -90,6 +96,15 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
         this.duration -= Gdx.graphics.getDeltaTime();
         for (AbstractCard card: cards) {
             card.update();
+        }
+
+        if(this.duration < this.halfDuration && !middleOfAnimation) {
+            middleOfAnimation = true;
+            for (AbstractCard card : cards) {
+                card.target_x = Settings.WIDTH * 0.5F;
+                card.target_y = Settings.HEIGHT * 0.5F;
+                card.targetDrawScale = 0.01f;
+            }
         }
 
         if (this.duration < 0.0F) {
