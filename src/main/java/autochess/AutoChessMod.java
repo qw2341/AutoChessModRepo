@@ -3,6 +3,7 @@ package autochess;
 import autochess.patches.CardLevelPatch;
 import autochess.patches.CustomRewardPatch;
 import autochess.relics.ChessPiece;
+import autochess.relics.ZephrysLamp;
 import autochess.rewards.MayhemReward;
 import autochess.rewards.ScryReward;
 import autochess.savables.ChessSave;
@@ -321,6 +322,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receiveEditRelics() {
         BaseMod.addRelic(new ChessPiece(), RelicType.SHARED);
+        BaseMod.addRelic(new ZephrysLamp(), RelicType.SHARED);
     }
 
     @Override
@@ -347,4 +349,6 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         AbstractDungeon.player.energy.energyMaster = 0;
         AbstractDungeon.player.masterHandSize = 0;
     }
+
+
 }

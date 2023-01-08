@@ -1,10 +1,17 @@
 {
   "AutoChessMod:ChessPiece": {
     "NAME": "Chess Piece",
-    "FLAVOR": "Yet another yet another autobattler",
+    "FLAVOR": "Ah ha, that's a triple, here's your reward",
     "DESCRIPTIONS": [
       "Obtaining #b",
       " cards of the same tier will give you a #ycombined card with doubled stats"
+    ]
+  },
+  "AutoChessMod:ZephrysLamp": {
+    "NAME": "Lamp of Zephrys",
+    "FLAVOR": "Your wish is my suggestion.",
+    "DESCRIPTIONS": [
+      "You can triple with one less card (no lower than 2 cards)"
     ]
   }
 }
