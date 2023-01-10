@@ -81,6 +81,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String ENABLE_AUTO_BATTLE_KEY = "enableAutoBat";
     public static boolean enableAutoBattle = true;
 
+    public static final String ENABLE_TRIPLES = "enableTriples";
+    public static boolean enableTriples = true;
+
     public static char levelSymbol;
 
     ModPanel settingsPanel;
@@ -108,6 +111,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         theDefaultDefaultSettings.setProperty(ENABLE_BASIC_CARDS_TRIPLES_KEY, "FALSE");
         theDefaultDefaultSettings.setProperty(LIMITED_AUTOPLAY_CRADS_DRAWN, "TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_AUTO_BATTLE_KEY,"TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_TRIPLES, "TRUE");
         try {
             config = new SpireConfig("autoChessMod", "autoChessConfig", theDefaultDefaultSettings);
             config.load();
@@ -123,6 +127,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             enableBasicCardTriple = config.getBool(ENABLE_BASIC_CARDS_TRIPLES_KEY);
             limitedAutoDrawnCards = config.getBool(LIMITED_AUTOPLAY_CRADS_DRAWN);
             enableAutoBattle = config.getBool(ENABLE_AUTO_BATTLE_KEY);
+            enableTriples = config.getBool(ENABLE_TRIPLES);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -349,6 +354,19 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         });
         settingYPos -= lineSpacing;
         settingsPanel.addUIElement(eAutoButton);
+
+        ModLabeledToggleButton eTripleButton = new ModLabeledToggleButton(SettingText[12],settingXPos,settingYPos,Settings.CREAM_COLOR,FontHelper.charDescFont, enableTriples,settingsPanel, label -> {},button -> {
+
+            enableTriples = button.enabled;
+            try {
+                config.setBool(ENABLE_TRIPLES, enableTriples);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(eTripleButton);
 
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         logger.info("========================= Done Adding Auto Chess Mod Badge  =========================");

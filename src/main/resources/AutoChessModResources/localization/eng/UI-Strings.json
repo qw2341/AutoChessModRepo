@@ -12,7 +12,8 @@
       "Allow basic cards to triple",
       "Limit Autoplay on Cards Drawn",
       "Limit number of cards autoplayed from hands to the number of cards drawn per turn",
-      "Enable Auto Battle"
+      "Enable Auto Battle",
+      "Enable Card Tripling"
     ]
   },
   "AutoChessMod:UpgradeMayhemButton": {

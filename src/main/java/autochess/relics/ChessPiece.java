@@ -50,6 +50,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
     @Override
     public void onMasterDeckChange() {
+        if(!AutoChessMod.enableTriples) return;
 
         ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.masterDeck.group,ChessSave.getNumCardsForTriple());
 //        AutoChessMod.logger.info("Logging dupe Card: ");
@@ -139,7 +140,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     public void onRefreshHand() {
         if(AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp) {
             if((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) {
-                if(AbstractDungeon.player.hand.size() >= ChessSave.getNumCardsForTriple()) {
+                if(AutoChessMod.enableTriples && AbstractDungeon.player.hand.size() >= ChessSave.getNumCardsForTriple()) {
                     ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.hand.group,ChessSave.getNumCardsForTriple());
                     if(dupeCards.isEmpty()) return;
 
@@ -304,6 +305,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
             AutoChessMod.logger.info("Auto limit: " + this.counterBase);
             this.setCounter(this.counterBase);
+            this.description = getUpdatedDescription();
         }
 
     }
