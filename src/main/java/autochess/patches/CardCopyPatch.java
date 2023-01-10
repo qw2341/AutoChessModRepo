@@ -10,5 +10,6 @@ public class CardCopyPatch {
     @SpireInsertPatch(rloc = 10, localvars = {"card"})
     public static void Insert(AbstractCard __instance, AbstractCard card) {
         CardLevelPatch.setCardLevel(card, CardLevelPatch.getCardLevel(__instance));
+        card.magicNumber = __instance.baseMagicNumber;
     }
 }
