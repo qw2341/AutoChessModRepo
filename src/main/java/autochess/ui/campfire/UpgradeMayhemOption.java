@@ -35,6 +35,8 @@ public class UpgradeMayhemOption extends AbstractCampfireOption {
 
     @Override
     public void useOption() {
+        AbstractDungeon.player.loseGold(this.upgradeCost);
+
         ChessSave.setMayhemStacks(ChessSave.getMayhemStacks() + 1);
         this.upgradeCost += AutoChessMod.defaultMayhemUpgradePenalty;
         ChessSave.setMayhemCosts(this.upgradeCost);

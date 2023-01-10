@@ -34,6 +34,8 @@ public class UpgradeScryOption extends AbstractCampfireOption {
 
     @Override
     public void useOption() {
+        AbstractDungeon.player.loseGold(this.upgradeCost);
+
         ChessSave.setScryStacks(ChessSave.getScryStacks() + 1);
         this.upgradeCost += AutoChessMod.defaultScryUpgradePenalty;
         ChessSave.setScryCosts(this.upgradeCost);
