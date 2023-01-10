@@ -305,7 +305,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
             AutoChessMod.logger.info("Auto limit: " + this.counterBase);
             this.setCounter(this.counterBase);
-            this.description = getUpdatedDescription();
+            if(this.tips != null && !this.tips.isEmpty())this.tips.get(0).body = getUpdatedDescription();
         }
 
     }
