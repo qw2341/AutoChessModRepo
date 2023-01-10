@@ -48,12 +48,7 @@ public class ShowTripleAndObtainEffect extends AbstractGameEffect {
             this.halfDuration = 0.0f;
         } else {
 
-
-            final int cardLevel = CardLevelPatch.getCardLevel(cards.get(0));
-
-            this.cardToObtain = CardLibrary.getCard(cards.get(0).cardID).makeCopy();
-
-            ChessPiece.modifyCard(this.cardToObtain, cardLevel + 1);
+            this.cardToObtain = ChessPiece.getCombinedCard(cards);
 
             if (Settings.FAST_MODE) {
                 this.duration = FAST_DUR;
