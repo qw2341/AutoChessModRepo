@@ -187,7 +187,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
     public static void levelUpCard(AbstractCard card) {
         CardLevelPatch.setCardLevel(card, CardLevelPatch.getCardLevel(card) + 1);
-        card.cost *= 2;
+        if(card.cost > 0) card.cost *= 2;
         card.costForTurn = card.cost;
         card.baseDamage  *= 2;
         card.baseBlock  *= 2;
