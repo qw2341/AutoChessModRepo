@@ -4,7 +4,8 @@
     "FLAVOR": "Ah ha, that's a triple, here's your reward",
     "DESCRIPTIONS": [
       "Obtaining #b",
-      " cards of the same tier will give you a #ycombined card with doubled stats"
+      " cards of the same tier will give you a #ycombined card with doubled stats. The next #b",
+      " card(s) you draw will be autoplayed"
     ]
   },
   "AutoChessMod:ZephrysLamp": {

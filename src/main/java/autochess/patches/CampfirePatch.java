@@ -1,5 +1,6 @@
 package autochess.patches;
 
+import autochess.AutoChessMod;
 import autochess.ui.campfire.UpgradeMayhemOption;
 import autochess.ui.campfire.UpgradeScryOption;
 import basemod.ReflectionHacks;
@@ -16,13 +17,10 @@ public class CampfirePatch
         CampfireUI me = (CampfireUI)meObj;
         ArrayList<AbstractCampfireOption> campfireButtons = (ArrayList<AbstractCampfireOption>) ReflectionHacks.getPrivate(me, CampfireUI.class, "buttons");
         if (campfireButtons != null) {
-
-            campfireButtons.add(new UpgradeMayhemOption());
-            campfireButtons.add(new UpgradeScryOption());
-//            if (campfireButtons.size() == 3) {
-//                ((AbstractCampfireOption)campfireButtons.get(campfireButtons.size() - 1)).setPosition(950.0F * Settings.scale, 450.0F * Settings.scale);
-//            }
-
+            if(AutoChessMod.enableAutoBattle) {
+                campfireButtons.add(new UpgradeMayhemOption());
+                campfireButtons.add(new UpgradeScryOption());
+            }
             ReflectionHacks.setPrivate(me, CampfireUI.class, "buttons", campfireButtons);
         }
 

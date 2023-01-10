@@ -9,7 +9,10 @@
       "Set Scry Upgrade Cost Penalty",
       "Bonus Cards in Selection",
       "Bonus Card Drops",
-      "Allow basic cards to triple"
+      "Allow basic cards to triple",
+      "Limit Autoplay on Cards Drawn",
+      "Limit number of cards autoplayed from hands to the number of cards drawn per turn",
+      "Enable Auto Battle"
     ]
   },
   "AutoChessMod:UpgradeMayhemButton": {
