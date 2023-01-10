@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -75,6 +75,12 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String ENABLE_BASIC_CARDS_TRIPLES_KEY = "eBasicCardsTriples";
     public static boolean enableBasicCardTriple = false;
 
+    public static final String LIMITED_AUTOPLAY_CRADS_DRAWN= "limitAPCD";
+    public static boolean limitedAutoDrawnCards = true;
+
+    public static final String ENABLE_AUTO_BATTLE_KEY = "enableAutoBat";
+    public static boolean enableAutoBattle = true;
+
     public static char levelSymbol;
 
     ModPanel settingsPanel;
@@ -100,6 +106,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         theDefaultDefaultSettings.setProperty(BONUS_CARD_DROP_SELECTION_KEY, "2");
         theDefaultDefaultSettings.setProperty(ENABLE_BONUS_CARD_DROP_KEY, "TRUE");
         theDefaultDefaultSettings.setProperty(ENABLE_BASIC_CARDS_TRIPLES_KEY, "FALSE");
+        theDefaultDefaultSettings.setProperty(LIMITED_AUTOPLAY_CRADS_DRAWN, "TRUE");
+        theDefaultDefaultSettings.setProperty(ENABLE_AUTO_BATTLE_KEY,"TRUE");
         try {
             config = new SpireConfig("autoChessMod", "autoChessConfig", theDefaultDefaultSettings);
             config.load();
@@ -113,6 +121,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             bonusCardDropSelection = config.getInt(BONUS_CARD_DROP_SELECTION_KEY);
             enableBonusCardDrop = config.getBool(ENABLE_BONUS_CARD_DROP_KEY);
             enableBasicCardTriple = config.getBool(ENABLE_BASIC_CARDS_TRIPLES_KEY);
+            limitedAutoDrawnCards = config.getBool(LIMITED_AUTOPLAY_CRADS_DRAWN);
+            enableAutoBattle = config.getBool(ENABLE_AUTO_BATTLE_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -314,6 +324,32 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         settingYPos -= lineSpacing;
         settingsPanel.addUIElement(bCardTripleButton);
 
+        ModLabeledToggleButton lAutoCardsButton = new ModLabeledToggleButton(SettingText[9], SettingText[10],settingXPos,settingYPos,Settings.CREAM_COLOR,FontHelper.charDescFont, limitedAutoDrawnCards,settingsPanel, label -> {},button -> {
+
+            limitedAutoDrawnCards = button.enabled;
+            try {
+                config.setBool(LIMITED_AUTOPLAY_CRADS_DRAWN, limitedAutoDrawnCards);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(lAutoCardsButton);
+
+        ModLabeledToggleButton eAutoButton = new ModLabeledToggleButton(SettingText[11],settingXPos,settingYPos,Settings.CREAM_COLOR,FontHelper.charDescFont, enableAutoBattle,settingsPanel, label -> {},button -> {
+
+            enableAutoBattle = button.enabled;
+            try {
+                config.setBool(ENABLE_AUTO_BATTLE_KEY, enableAutoBattle);
+                config.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        settingYPos -= lineSpacing;
+        settingsPanel.addUIElement(eAutoButton);
+
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         logger.info("========================= Done Adding Auto Chess Mod Badge  =========================");
 
@@ -327,12 +363,18 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receivePostDungeonInitialize() {
         ChessSave.restoreDefault();
-
+        //ChessSave.setAutoCardsLimit(AbstractDungeon.player.masterHandSize);
+        if(enableAutoBattle) AutoChessMod.logger.info("Post Init Auto limit: " + ChessSave.getAutoCardsLimit());
         if(RelicLibrary.isARelic(ChessPiece.ID)&&!AbstractDungeon.player.hasRelic(ChessPiece.ID)) RelicLibrary.getRelic(ChessPiece.ID).makeCopy().instantObtain();
 
         if(AbstractDungeon.player.hasRelic(ChessPiece.ID)) AbstractDungeon.player.getRelic(ChessPiece.ID).onMasterDeckChange();
-        AbstractDungeon.player.energy.energyMaster = 0;
-        AbstractDungeon.player.masterHandSize = 0;
+
+        if(enableAutoBattle) {
+            AbstractDungeon.player.energy.energyMaster = 0;
+
+            AbstractDungeon.player.masterHandSize = 0;
+        }
+
     }
 
     @Override
@@ -396,8 +438,10 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receiveOnBattleStart(AbstractRoom abstractRoom) {
         if(abstractRoom instanceof MonsterRoomBoss) {
-            abstractRoom.rewards.add(new MayhemReward(1));
-            abstractRoom.rewards.add(new ScryReward(2));
+            if(enableAutoBattle) {
+                abstractRoom.rewards.add(new MayhemReward(1));
+                abstractRoom.rewards.add(new ScryReward(2));
+            }
         }
         if(enableBonusCardDrop && abstractRoom instanceof MonsterRoom) {
             abstractRoom.rewards.add(new RewardItem());
@@ -406,9 +450,17 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receiveRelicGet(AbstractRelic abstractRelic) {
-        AbstractDungeon.player.energy.energyMaster = 0;
-        AbstractDungeon.player.masterHandSize = 0;
+        if(enableAutoBattle){
+            AutoChessMod.logger.info("Relic get Auto limit: " + ChessSave.getAutoCardsLimit());
+            AbstractDungeon.player.energy.energyMaster = 0;
+            ChessSave.setAutoCardsLimit(ChessSave.getAutoCardsLimit() + AbstractDungeon.player.masterHandSize);
+            AbstractDungeon.player.masterHandSize = 0;
+        }
     }
 
 
+    @Override
+    public void receiveOnPlayerTurnStart() {
+
+    }
 }

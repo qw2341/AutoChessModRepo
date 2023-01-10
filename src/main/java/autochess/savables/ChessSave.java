@@ -3,6 +3,7 @@ package autochess.savables;
 import autochess.AutoChessMod;
 import autochess.relics.ChessPiece;
 import basemod.abstracts.CustomSavable;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import java.util.HashMap;
 
@@ -14,6 +15,8 @@ public class ChessSave implements CustomSavable<HashMap<String,Integer>> {
     public static final String MAYHEM_COST_KEY = "mayhemCosts";
     public static final String SCRY_COST_KEY = "scryCosts";
     public static final String NUM_CARDS_FOR_TRIPLE = "numCardsTriple";
+
+    public static final String AUTO_CARDS_LIMIT = "autoCLimit";
 
     @Override
     public HashMap<String,Integer> onSave() {
@@ -32,6 +35,7 @@ public class ChessSave implements CustomSavable<HashMap<String,Integer>> {
         save.put(MAYHEM_COST_KEY, AutoChessMod.defaultMayhemUpgradeCost);
         save.put(SCRY_COST_KEY, AutoChessMod.defaultScryUpgradeCost);
         save.put(NUM_CARDS_FOR_TRIPLE, 3);
+        save.put(AUTO_CARDS_LIMIT, 5);
     }
 
     public static int getMayhemStacks() {
@@ -71,6 +75,15 @@ public class ChessSave implements CustomSavable<HashMap<String,Integer>> {
 
     public static void setNumCardsForTriple(int numCards) {
         save.put(NUM_CARDS_FOR_TRIPLE,numCards);
+    }
+
+    public static int getAutoCardsLimit() {
+        return save.get(AUTO_CARDS_LIMIT);
+    }
+
+    public static void setAutoCardsLimit(int limit) {
+        AutoChessMod.logger.info("Setting Auto limit to: " + ChessSave.getAutoCardsLimit());
+        save.put(AUTO_CARDS_LIMIT, limit);
     }
 
 }

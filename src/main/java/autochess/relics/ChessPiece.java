@@ -35,27 +35,29 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         exceptionTypeSet.add(AbstractCard.CardType.STATUS);
         exceptionTypeSet.add(AbstractCard.CardType.CURSE);
     }
+    private int counterBase = 5;
 
 
     public ChessPiece() {
         super(ID, IMG, OUTLINE, RelicTier.SPECIAL, LandingSound.CLINK);
+
     }
 
     @Override
     public String getUpdatedDescription() {
-        return DESCRIPTIONS[0] + ChessSave.getNumCardsForTriple() + DESCRIPTIONS[1];
+        return DESCRIPTIONS[0] + ChessSave.getNumCardsForTriple() + DESCRIPTIONS[1] + this.counter + DESCRIPTIONS[2];
     }
 
     @Override
     public void onMasterDeckChange() {
 
         ArrayList<AbstractCard> dupeCards = getDuplicates(AbstractDungeon.player.masterDeck.group,ChessSave.getNumCardsForTriple());
-        AutoChessMod.logger.info("Logging dupe Card: ");
-        StringBuilder sb = new StringBuilder();
-        for (AbstractCard card : dupeCards) {
-            sb.append(card.cardID).append(" with level: ").append(CardLevelPatch.getCardLevel(card)).append('\n');
-        }
-        AutoChessMod.logger.info(sb.toString());
+//        AutoChessMod.logger.info("Logging dupe Card: ");
+//        StringBuilder sb = new StringBuilder();
+//        for (AbstractCard card : dupeCards) {
+//            sb.append(card.cardID).append(" with level: ").append(CardLevelPatch.getCardLevel(card)).append('\n');
+//        }
+//        AutoChessMod.logger.info(sb.toString());
 
         if(dupeCards.isEmpty()) return;
 
@@ -121,9 +123,16 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
     @Override
     public void onCardDraw(AbstractCard drawnCard) {
-       if (!AbstractDungeon.player.hasRelic(UnceasingTop.ID) || AbstractDungeon.player.hand.size() > 1) {
-           AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(drawnCard,true, EnergyPanel.getCurrentEnergy(), true, true));
-       }
+        if(AutoChessMod.enableAutoBattle) {
+                if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
+                    AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(drawnCard,true, EnergyPanel.getCurrentEnergy(), true, true),true);
+                    this.counter--;
+                } else if (!AutoChessMod.limitedAutoDrawnCards) {
+                    AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(drawnCard,true, EnergyPanel.getCurrentEnergy(), true, true),true);
+                }
+
+        }
+
     }
 
     @Override
@@ -151,11 +160,18 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
                     AbstractDungeon.effectsQueue.add(new ShowTripleAndObtainEffect(cardsToRemove, CardGroup.CardGroupType.HAND));
                 }
-                if(!AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded) {
-                    if(AbstractDungeon.player.hand.size() > 1 || (AbstractDungeon.player.hand.size() == 1 && !AbstractDungeon.player.hasRelic(UnceasingTop.ID)))
-                        AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(AbstractDungeon.player.hand.getTopCard(),true, EnergyPanel.getCurrentEnergy(), true, true));
-                }
+                if(AutoChessMod.enableAutoBattle) {
+                    if(!AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
+                            if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
+                                AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(AbstractDungeon.player.hand.getTopCard(),true, EnergyPanel.getCurrentEnergy(), true, true));
+                                this.counter--;
+                            } else if(!AutoChessMod.limitedAutoDrawnCards) {
+                                AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(AbstractDungeon.player.hand.getTopCard(),true, EnergyPanel.getCurrentEnergy(), true, true));
+                            }
 
+
+                    }
+                }
             }
         }
     }
@@ -275,5 +291,20 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         return numberOfCards + AutoChessMod.bonusCardDropSelection;
     }
 
+    @Override
+    public void atBattleStartPreDraw() {
+        this.counterBase = ChessSave.getAutoCardsLimit();
+    }
 
+    @Override
+    public void atTurnStart() {
+        if(AutoChessMod.enableAutoBattle) {
+            this.counterBase += AbstractDungeon.player.gameHandSize;
+            AbstractDungeon.player.gameHandSize = 0;
+
+            AutoChessMod.logger.info("Auto limit: " + this.counterBase);
+            this.setCounter(this.counterBase);
+        }
+
+    }
 }
