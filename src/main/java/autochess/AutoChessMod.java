@@ -501,7 +501,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receiveCardUsed(AbstractCard card) {
-        logger.info(card.cardID + " used! Card level = " + CardLevelPatch.getCardLevel(card) + " Can be leveled up? " + CardUpgradabilityPatch.canLevelUp(card));
+        //logger.info(card.cardID + " used! Card level = " + CardLevelPatch.getCardLevel(card) + " Can be leveled up? " + CardUpgradabilityPatch.canLevelUp(card));
         if(CardLevelPatch.getCardLevel(card) > 1 && !CardUpgradabilityPatch.canLevelUp(card)) {
             AbstractCard copy = CardLibrary.getCard(card.cardID).makeCopy();
             ChessPiece.modifyCard(copy,CardLevelPatch.getCardLevel(card) - 1);
