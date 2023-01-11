@@ -126,10 +126,10 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     public void onCardDraw(AbstractCard drawnCard) {
         if(AutoChessMod.enableAutoBattle) {
                 if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
-                    AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(drawnCard,true, EnergyPanel.getCurrentEnergy(), true, true),true);
+                    addToAutoPlay(drawnCard);
                     this.counter--;
                 } else if (!AutoChessMod.limitedAutoDrawnCards) {
-                    AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(drawnCard,true, EnergyPanel.getCurrentEnergy(), true, true),true);
+                    addToAutoPlay(drawnCard);
                 }
 
         }
@@ -164,10 +164,10 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
                 if(AutoChessMod.enableAutoBattle) {
                     if(!AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
                             if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
-                                AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(AbstractDungeon.player.hand.getTopCard(),true, EnergyPanel.getCurrentEnergy(), true, true));
+                                addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
                                 this.counter--;
                             } else if(!AutoChessMod.limitedAutoDrawnCards) {
-                                AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(AbstractDungeon.player.hand.getTopCard(),true, EnergyPanel.getCurrentEnergy(), true, true));
+                                addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
                             }
 
 
@@ -308,5 +308,13 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
             if(this.tips != null && !this.tips.isEmpty())this.tips.get(0).body = getUpdatedDescription();
         }
 
+    }
+
+    public static void addToAutoPlay(AbstractCard card) {
+        AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(card,true, EnergyPanel.getCurrentEnergy(), true, true));
+    }
+
+    public static void addToAutoPlayTop(AbstractCard card) {
+        AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(card,true, EnergyPanel.getCurrentEnergy(), true, true), true);
     }
 }

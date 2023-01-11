@@ -1,6 +1,7 @@
 package autochess;
 
 import autochess.patches.CardLevelPatch;
+import autochess.patches.CardUpgradabilityPatch;
 import autochess.patches.CustomRewardPatch;
 import autochess.relics.ChessPiece;
 import autochess.relics.ZephrysLamp;
@@ -23,6 +24,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
@@ -43,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber, PostPowerApplySubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber, PostPowerApplySubscriber, OnCardUseSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -494,6 +496,16 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             if(power instanceof MantraPower && power.amount >= 10) {
                 AbstractDungeon.actionManager.addToBottom((AbstractGameAction)new ApplyPowerAction((AbstractCreature)target, (AbstractCreature)source, (AbstractPower)new MantraPower((AbstractCreature)target, 0), 0));
             }
+        }
+    }
+
+    @Override
+    public void receiveCardUsed(AbstractCard card) {
+        logger.info(card.cardID + " used! Card level = " + CardLevelPatch.getCardLevel(card) + " Can be leveled up? " + CardUpgradabilityPatch.canLevelUp(card));
+        if(CardLevelPatch.getCardLevel(card) > 1 && !CardUpgradabilityPatch.canLevelUp(card)) {
+            AbstractCard copy = CardLibrary.getCard(card.cardID).makeCopy();
+            ChessPiece.modifyCard(copy,CardLevelPatch.getCardLevel(card) - 1);
+            ChessPiece.addToAutoPlayTop(copy);
         }
     }
 }
