@@ -12,7 +12,15 @@
     "NAME": "杰弗里斯的神灯",
     "FLAVOR": "我尽量满足你的愿望",
     "DESCRIPTIONS": [
-      "三连所需的卡牌数量减少 #b1 张(不低于两张)"
+      "三连所需的卡牌数量减少 #b1 张(不低于两张)。"
+    ]
+  },
+  "AutoChessMod:MagicalGatling": {
+    "NAME": "魔法加特林",
+    "FLAVOR": "我们要发财了!",
+    "DESCRIPTIONS": [
+      "三连一个非三连卡牌。",
+      "选择一张卡来三连"
     ]
   }
 }

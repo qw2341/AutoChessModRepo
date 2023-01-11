@@ -4,6 +4,7 @@ import autochess.patches.CardLevelPatch;
 import autochess.patches.CardUpgradabilityPatch;
 import autochess.patches.CustomRewardPatch;
 import autochess.relics.ChessPiece;
+import autochess.relics.MagicalGatling;
 import autochess.relics.ZephrysLamp;
 import autochess.rewards.MayhemReward;
 import autochess.rewards.ScryReward;
@@ -451,6 +452,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public void receiveEditRelics() {
         BaseMod.addRelic(new ChessPiece(), RelicType.SHARED);
         BaseMod.addRelic(new ZephrysLamp(), RelicType.SHARED);
+        BaseMod.addRelic(new MagicalGatling(), RelicType.SHARED);
     }
 
     @Override
@@ -463,15 +465,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receiveOnBattleStart(AbstractRoom abstractRoom) {
-        if(abstractRoom instanceof MonsterRoomBoss) {
-            if(enableAutoBattle) {
-                abstractRoom.rewards.add(new MayhemReward(1));
-                abstractRoom.rewards.add(new ScryReward(2));
-            }
-        }
-        if(enableBonusCardDrop && abstractRoom instanceof MonsterRoom) {
-            abstractRoom.rewards.add(new RewardItem());
-        }
+
     }
 
     @Override
