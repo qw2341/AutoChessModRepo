@@ -35,7 +35,7 @@ public class ChessSave implements CustomSavable<HashMap<String,Integer>> {
         save.put(MAYHEM_COST_KEY, AutoChessMod.defaultMayhemUpgradeCost);
         save.put(SCRY_COST_KEY, AutoChessMod.defaultScryUpgradeCost);
         save.put(NUM_CARDS_FOR_TRIPLE, 3);
-        save.put(AUTO_CARDS_LIMIT, 5);
+        save.put(AUTO_CARDS_LIMIT, 0);
     }
 
     public static int getMayhemStacks() {
