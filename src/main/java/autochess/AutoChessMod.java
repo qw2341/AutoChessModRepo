@@ -4,10 +4,7 @@ import autochess.patches.CardLevelPatch;
 import autochess.patches.CardUpgradabilityPatch;
 import autochess.patches.CustomRewardPatch;
 import autochess.potions.MayhemPotion;
-import autochess.relics.CapturedFlag;
-import autochess.relics.ChessPiece;
-import autochess.relics.MagicalGatling;
-import autochess.relics.ZephrysLamp;
+import autochess.relics.*;
 import autochess.rewards.MayhemReward;
 import autochess.rewards.ScryReward;
 import autochess.savables.ChessSave;
@@ -479,6 +476,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         BaseMod.addRelic(new ZephrysLamp(), RelicType.SHARED);
         BaseMod.addRelic(new MagicalGatling(), RelicType.SHARED);
         BaseMod.addRelic(new CapturedFlag(), RelicType.SHARED);
+        BaseMod.addRelic(new BeerMug(), RelicType.SHARED);
     }
 
     @Override

@@ -29,6 +29,15 @@
   "DESCRIPTIONS": [
     "Your cards gain #g+1 to their stat."
   ]
-}
+},
+  "AutoChessMod:BeerMug": {
+    "NAME": "Beer Mug",
+    "FLAVOR": "From the tavern",
+    "DESCRIPTIONS": [
+      "Cost to upgrade Mayhem is reduced by #g",
+      " % and cost to upgrade Scry is increased by #r",
+      " %."
+    ]
+  }
 
 }

@@ -29,5 +29,14 @@
     "DESCRIPTIONS": [
       "你的卡牌的数值获得 #g+1 。"
     ]
+  },
+  "AutoChessMod:BeerMug": {
+    "NAME": "啤酒杯",
+    "FLAVOR": "来自酒馆",
+    "DESCRIPTIONS": [
+      "升级乱战的费用减少 #g",
+      " % 但是升级预见的费用增加 #r",
+      " %。"
+    ]
   }
 }
