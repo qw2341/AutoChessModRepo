@@ -3,6 +3,7 @@ package autochess;
 import autochess.patches.CardLevelPatch;
 import autochess.patches.CardUpgradabilityPatch;
 import autochess.patches.CustomRewardPatch;
+import autochess.potions.MayhemPotion;
 import autochess.relics.ChessPiece;
 import autochess.relics.MagicalGatling;
 import autochess.relics.ZephrysLamp;
@@ -13,6 +14,7 @@ import autochess.util.TextureLoader;
 import basemod.*;
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -61,12 +63,12 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     public static final String CHESS_SAVE_KEY = "chessSave";
 
     public static final String DEFAULT_MAYHEM_STACK_KEY = "dMayhemStacks";
-    public static int defaultMayhemStacks = 5;
+    public static int defaultMayhemStacks = 3;
     public static final String DEFAULT_SCRY_STACK_KEY = "dScryStacks";
     public static int defaultScryStacks = 5;
 
     public static final String DEFAULT_UPGRADE_MAYHEM_COST_KEY = "dMayUpCost";
-    public static int defaultMayhemUpgradeCost = 500;
+    public static int defaultMayhemUpgradeCost = 300;
     public static final String DEFAULT_UPGRADE_SCRY_COST_KEY = "dScryUpCost";
     public static int defaultScryUpgradeCost = 100;
 
@@ -109,9 +111,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
 
         logger.info("Adding mod settings");
-        theDefaultDefaultSettings.setProperty(DEFAULT_MAYHEM_STACK_KEY, "5");
+        theDefaultDefaultSettings.setProperty(DEFAULT_MAYHEM_STACK_KEY, "3");
         theDefaultDefaultSettings.setProperty(DEFAULT_SCRY_STACK_KEY, "5");
-        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_COST_KEY, "500");
+        theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_COST_KEY, "300");
         theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_COST_KEY, "100");
         theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_MAYHEM_PENALTY_KEY, "100");
         theDefaultDefaultSettings.setProperty(DEFAULT_UPGRADE_SCRY_PENALTY_KEY, "50");
@@ -124,6 +126,10 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         try {
             config = new SpireConfig("autoChessMod", "autoChessConfig", theDefaultDefaultSettings);
             config.load();
+            //TODO delete this
+            config.setInt(DEFAULT_MAYHEM_STACK_KEY, 3);
+            config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, 300);
+            config.save();
 
             defaultMayhemStacks = config.getInt(DEFAULT_MAYHEM_STACK_KEY);
             defaultScryStacks = config.getInt(DEFAULT_SCRY_STACK_KEY);
@@ -384,6 +390,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         BaseMod.registerCustomReward(CustomRewardPatch.ACM_MAYHEM_REWARD,rewardSave -> new MayhemReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((MayhemReward) customReward).amount, 0));
         BaseMod.registerCustomReward(CustomRewardPatch.ACM_SCRY_REWARD,rewardSave -> new ScryReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((ScryReward) customReward).amount, 0));
         logger.info("Done adding custom rewards");
+
+        BaseMod.addPotion(MayhemPotion.class, Color.SCARLET, Color.ORANGE, Color.FIREBRICK, MayhemPotion.POTION_ID);
     }
 
 
@@ -413,8 +421,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
          levelSymbol = languageSupport().equals("eng") ? '+' : '★';
 
-        BaseMod.loadCustomStringsFile(RelicStrings.class,
-                getModID() + "Resources/localization/"+languageSupport()+"/Relic-Strings.json");
+
 
     }
 
@@ -438,6 +445,10 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     private void loadLocStrings(String language) {
         BaseMod.loadCustomStringsFile(UIStrings.class, getModID() + "Resources/localization/" + language + "/UI-Strings.json");
+        BaseMod.loadCustomStringsFile(RelicStrings.class,
+                getModID() + "Resources/localization/"+ language +"/Relic-Strings.json");
+        BaseMod.loadCustomStringsFile(RelicStrings.class,
+                getModID() + "Resources/localization/"+ language +"/Potion-Strings.json");
     }
 
     @Override
