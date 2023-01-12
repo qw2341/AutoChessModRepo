@@ -16,7 +16,7 @@ import com.megacrit.cardcrawl.powers.MayhemPower;
 
 public class MayhemPotion extends CustomPotion {
     public static final String POTION_ID = AutoChessMod.makeID("MayhemPotion");
-    private static final PotionStrings potionStrings = CardCrawlGame.languagePack.getPotionString(POTION_ID);;
+    private static final PotionStrings potionStrings = CardCrawlGame.languagePack.getPotionString(POTION_ID);
 
     public static final String NAME = potionStrings.NAME;
 
@@ -25,6 +25,7 @@ public class MayhemPotion extends CustomPotion {
     public MayhemPotion() {
         super(NAME, POTION_ID, PotionRarity.UNCOMMON, PotionSize.CARD, PotionColor.STEROID);
         this.isThrown = false;
+        this.targetRequired = false;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class MayhemPotion extends CustomPotion {
 
     @Override
     public void use(AbstractCreature target) {
-        addToBot(new ApplyPowerAction(target, (AbstractCreature) AbstractDungeon.player, (AbstractPower)new MayhemPower(target, this.potency), this.potency));
+        addToBot(new ApplyPowerAction(AbstractDungeon.player, (AbstractCreature) AbstractDungeon.player, (AbstractPower)new MayhemPower(AbstractDungeon.player, this.potency), this.potency));
     }
 
     @Override
