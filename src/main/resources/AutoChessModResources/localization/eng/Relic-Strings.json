@@ -12,15 +12,23 @@
     "NAME": "Lamp of Zephrys",
     "FLAVOR": "Your wish is my suggestion.",
     "DESCRIPTIONS": [
-      "You can triple with one less card (no lower than 2 cards)"
+      "You can triple with one less card (no lower than 2 cards)."
     ]
   },
   "AutoChessMod:MagicalGatling": {
     "NAME": "Magical Gatling",
     "FLAVOR": "We are gonna be rich!",
     "DESCRIPTIONS": [
-      "On pick up, triple a non - tripled card",
+      "On pick up, triple a non - tripled card.",
       "Choose a card to triple"
     ]
-  }
+  },
+  "AutoChessMod:CapturedFlag": {
+  "NAME": "Captured Flag",
+  "FLAVOR": "Give your minions +1/+1",
+  "DESCRIPTIONS": [
+    "Your cards gain #g+1 to their stat."
+  ]
+}
+
 }

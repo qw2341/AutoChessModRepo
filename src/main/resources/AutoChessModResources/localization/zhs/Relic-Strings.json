@@ -22,5 +22,12 @@
       "拾起时，三连一个非三连卡牌。",
       "选择一张卡来三连"
     ]
+  },
+  "AutoChessMod:CapturedFlag": {
+    "NAME": "夺旗",
+    "FLAVOR": "使你的随从获得 +1/+1",
+    "DESCRIPTIONS": [
+      "你的卡牌的数值获得 #g+1 。"
+    ]
   }
 }

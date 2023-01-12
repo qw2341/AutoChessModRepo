@@ -4,6 +4,7 @@ import autochess.patches.CardLevelPatch;
 import autochess.patches.CardUpgradabilityPatch;
 import autochess.patches.CustomRewardPatch;
 import autochess.potions.MayhemPotion;
+import autochess.relics.CapturedFlag;
 import autochess.relics.ChessPiece;
 import autochess.relics.MagicalGatling;
 import autochess.relics.ZephrysLamp;
@@ -16,6 +17,7 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
@@ -476,6 +478,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         BaseMod.addRelic(new ChessPiece(), RelicType.SHARED);
         BaseMod.addRelic(new ZephrysLamp(), RelicType.SHARED);
         BaseMod.addRelic(new MagicalGatling(), RelicType.SHARED);
+        BaseMod.addRelic(new CapturedFlag(), RelicType.SHARED);
     }
 
     @Override

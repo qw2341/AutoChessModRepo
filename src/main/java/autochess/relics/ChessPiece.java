@@ -245,7 +245,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         for (int i = 0; i < size; i++) {
             AbstractCard card = playerDeck.get(i);
             int level = CardLevelPatch.getCardLevel(card);
-            if(level > 1) {
+            if(level >= 1 && card.type != AbstractCard.CardType.CURSE && card.type != AbstractCard.CardType.STATUS) {
                 Integer[] cardStat = new Integer[11];
                 cardStat[0] = i;
                 cardStat[1] = card.cost;
