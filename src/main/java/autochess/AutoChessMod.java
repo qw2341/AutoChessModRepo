@@ -31,6 +31,7 @@ import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.localization.PotionStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -126,10 +127,10 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         try {
             config = new SpireConfig("autoChessMod", "autoChessConfig", theDefaultDefaultSettings);
             config.load();
-            //TODO delete this
-            config.setInt(DEFAULT_MAYHEM_STACK_KEY, 3);
-            config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, 300);
-            config.save();
+
+
+
+
 
             defaultMayhemStacks = config.getInt(DEFAULT_MAYHEM_STACK_KEY);
             defaultScryStacks = config.getInt(DEFAULT_SCRY_STACK_KEY);
@@ -143,6 +144,17 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             limitedAutoDrawnCards = config.getBool(LIMITED_AUTOPLAY_CRADS_DRAWN);
             enableAutoBattle = config.getBool(ENABLE_AUTO_BATTLE_KEY);
             enableTriples = config.getBool(ENABLE_TRIPLES);
+
+            //TODO delete this
+            if(defaultMayhemStacks == 5) {
+                defaultMayhemStacks = 3;
+                config.setInt(DEFAULT_MAYHEM_STACK_KEY, 3);
+            }
+            if(defaultMayhemUpgradeCost == 500) {
+                defaultMayhemUpgradeCost = 300;
+                config.setInt(DEFAULT_UPGRADE_MAYHEM_COST_KEY, 300);
+            }
+            config.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,7 +403,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         BaseMod.registerCustomReward(CustomRewardPatch.ACM_SCRY_REWARD,rewardSave -> new ScryReward(rewardSave.amount), customReward -> new RewardSave(customReward.type.toString(),null, ((ScryReward) customReward).amount, 0));
         logger.info("Done adding custom rewards");
 
-        BaseMod.addPotion(MayhemPotion.class, Color.SCARLET, Color.ORANGE, Color.FIREBRICK, MayhemPotion.POTION_ID);
+        BaseMod.addPotion(MayhemPotion.class, Color.GOLD, Color.SCARLET, Color.FIREBRICK, MayhemPotion.POTION_ID);
     }
 
 
@@ -447,7 +459,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         BaseMod.loadCustomStringsFile(UIStrings.class, getModID() + "Resources/localization/" + language + "/UI-Strings.json");
         BaseMod.loadCustomStringsFile(RelicStrings.class,
                 getModID() + "Resources/localization/"+ language +"/Relic-Strings.json");
-        BaseMod.loadCustomStringsFile(RelicStrings.class,
+        BaseMod.loadCustomStringsFile(PotionStrings.class,
                 getModID() + "Resources/localization/"+ language +"/Potion-Strings.json");
     }
 
