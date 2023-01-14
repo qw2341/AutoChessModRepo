@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -409,17 +410,19 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     @Override
     public void receivePostDungeonInitialize() {
         ChessSave.restoreDefault();
-        //ChessSave.setAutoCardsLimit(AbstractDungeon.player.masterHandSize);
-        if(enableAutoBattle) AutoChessMod.logger.info("Post Init Auto limit: " + ChessSave.getAutoCardsLimit());
+
         if(RelicLibrary.isARelic(ChessPiece.ID)&&!AbstractDungeon.player.hasRelic(ChessPiece.ID)) RelicLibrary.getRelic(ChessPiece.ID).makeCopy().instantObtain();
 
         if(AbstractDungeon.player.hasRelic(ChessPiece.ID)) AbstractDungeon.player.getRelic(ChessPiece.ID).onMasterDeckChange();
 
         if(enableAutoBattle) {
             AbstractDungeon.player.energy.energyMaster = 0;
-
+            ChessSave.setAutoCardsLimit(ChessSave.getAutoCardsLimit() + AbstractDungeon.player.masterHandSize);
+            AutoChessMod.logger.info("Post Init Auto limit: " + ChessSave.getAutoCardsLimit());
             AbstractDungeon.player.masterHandSize = 0;
         }
+
+        if(Loader.isModLoaded("loadout")) ChessSave.setAutoCardsLimit(5);
 
     }
 
