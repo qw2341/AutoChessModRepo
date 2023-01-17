@@ -49,7 +49,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber, PostPowerApplySubscriber, OnCardUseSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber, PostPowerApplySubscriber, OnCardUseSubscriber, PreStartGameSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -409,7 +409,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
 
     @Override
     public void receivePostDungeonInitialize() {
-        ChessSave.restoreDefault();
+        if(!Settings.isEndless || AbstractDungeon.floorNum == 0) ChessSave.restoreDefault();
 
         if(RelicLibrary.isARelic(ChessPiece.ID)&&!AbstractDungeon.player.hasRelic(ChessPiece.ID)) RelicLibrary.getRelic(ChessPiece.ID).makeCopy().instantObtain();
 
@@ -528,5 +528,10 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
             ChessPiece.modifyCard(copy,CardLevelPatch.getCardLevel(card) - 1);
             ChessPiece.addToAutoPlayTop(copy);
         }
+    }
+
+    @Override
+    public void receivePreStartGame() {
+
     }
 }
