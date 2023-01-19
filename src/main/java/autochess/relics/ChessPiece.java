@@ -8,16 +8,11 @@ import autochess.vfx.ShowTripleAndObtainEffect;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.mod.stslib.actions.common.AutoplayCardAction;
-import com.megacrit.cardcrawl.actions.utility.NewQueueCardAction;
-import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.CardQueueItem;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.relics.UnceasingTop;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
@@ -136,6 +131,15 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
     }
 
+    public void autoplayHandTopCard() {
+        if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
+            addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
+            this.counter--;
+        } else if(!AutoChessMod.limitedAutoDrawnCards) {
+            addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
+        }
+    }
+
     @Override
     public void onRefreshHand() {
         if(AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp) {
@@ -163,14 +167,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
                 }
                 if(AutoChessMod.enableAutoBattle) {
                     if(!AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
-                            if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
-                                addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
-                                this.counter--;
-                            } else if(!AutoChessMod.limitedAutoDrawnCards) {
-                                addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
-                            }
-
-
+                        autoplayHandTopCard();
                     }
                 }
             }
@@ -311,10 +308,20 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     }
 
     public static void addToAutoPlay(AbstractCard card) {
+        //AutoChessMod.logger.info("Card added to autoplay queue: card ID = " + card.cardID);
         AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(card,true, EnergyPanel.getCurrentEnergy(), true, true));
     }
 
     public static void addToAutoPlayTop(AbstractCard card) {
         AbstractDungeon.actionManager.addCardQueueItem(new CardQueueItem(card,true, EnergyPanel.getCurrentEnergy(), true, true), true);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        if(AutoChessMod.enableAutoBattle && ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp && !AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
+            autoplayHandTopCard();
+        }
     }
 }
