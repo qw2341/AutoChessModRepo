@@ -3,9 +3,16 @@ package autochess.patches;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.red.BodySlam;
+
+import java.util.HashSet;
 
 @SpirePatch(clz = AbstractCard.class, method = "<class>")
 public class CardUpgradabilityPatch {
+    public static HashSet<String> exceptions = new HashSet<>();
+    static {
+        exceptions.add(BodySlam.ID);
+    }
     public static SpireField<Boolean> upgradable = new SpireField<>(() -> Boolean.valueOf(true));
 
     public static boolean getCardUpgradable(AbstractCard ac) {
