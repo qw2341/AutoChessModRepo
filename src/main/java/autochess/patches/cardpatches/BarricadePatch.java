@@ -1,7 +1,6 @@
 package autochess.patches.cardpatches;
 
 import autochess.patches.CardLevelPatch;
-import autochess.powers.EnergyRefund;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
