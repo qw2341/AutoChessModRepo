@@ -17,9 +17,9 @@ public class CorruptionPatch {
     @SpirePatch(clz = Corruption.class, method = "use", paramtypez = {AbstractPlayer.class, AbstractMonster.class})
     public static class UsePatch {
         @SpirePostfixPatch
-        public static void PostFix(AbstractPlayer p, AbstractMonster m, Corruption __instance) {
+        public static void PostFix(Corruption __instance, AbstractPlayer p, AbstractMonster m) {
             if(CardLevelPatch.getCardLevel(__instance) > 1) {
-                AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(p,p, new EnergyRefund(p, CardLevelPatch.getCardLevel(__instance) - 1)));
+                AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(p,p, new EnergyRefund(p, (int)Math.pow(2, CardLevelPatch.getCardLevel(__instance) - 2))));
             }
         }
     }
