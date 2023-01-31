@@ -12,8 +12,11 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.CardQueueItem;
 import com.megacrit.cardcrawl.cards.green.Catalyst;
+import com.megacrit.cardcrawl.cards.red.Barricade;
+import com.megacrit.cardcrawl.cards.red.Corruption;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
@@ -239,6 +242,14 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         baseCard.baseDiscard += diffArr[6];
         baseCard.misc += diffArr[7];
 
+        switch (baseCard.cardID) {
+            case Barricade.ID:
+                baseCard.rawDescription += CardLevelPatch.TEXT[0] + CardLevelPatch.getLeveledPowerAmount(baseCard)*10 + CardLevelPatch.TEXT[1];
+                break;
+            case Corruption.ID:
+                baseCard.rawDescription += CardLevelPatch.TEXT[2] + CardLevelPatch.getLeveledPowerAmount(baseCard) + " [E] " + LocalizedStrings.PERIOD;
+                break;
+        }
         baseCard.initializeDescription();
 
         return baseCard;

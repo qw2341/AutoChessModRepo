@@ -38,5 +38,12 @@
       " Mayhem.",
       " Scry."
     ]
+  },
+  "AutoChessMod:CardLevelText": {
+    "TEXT": [
+      " Gain ",
+      " Metallicize.",
+      " And gain "
+    ]
   }
 }

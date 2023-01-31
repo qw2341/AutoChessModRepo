@@ -38,5 +38,12 @@
       " 乱战。",
       " 预见。"
     ]
+  },
+  "AutoChessMod:CardLevelText": {
+    "TEXT": [
+      " 获得 ",
+      " 金属化。",
+      " 并且获得 "
+    ]
   }
 }

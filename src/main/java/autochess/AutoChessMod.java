@@ -539,6 +539,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
                         AbstractCard catalyst = new Catalyst();
                         CardLevelPatch.setCardLevel(catalyst,CardLevelPatch.getCardLevel(card) - 1);
                         if(card.upgraded) catalyst.upgrade();
+                        ChessPiece.addToAutoPlayTop(catalyst);
                         break;
                     case com.megacrit.cardcrawl.cards.red.Corruption.ID:
                     case com.megacrit.cardcrawl.cards.red.Barricade.ID:
