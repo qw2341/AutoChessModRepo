@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.CardQueueItem;
+import com.megacrit.cardcrawl.cards.green.Catalyst;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -199,9 +200,18 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     }
 
     public static AbstractCard getCombinedCard(ArrayList<AbstractCard> cards) {
-        int cardLevel = CardLevelPatch.getCardLevel(cards.get(0));
+        AbstractCard firstCard = cards.get(0);
+        int cardLevel = CardLevelPatch.getCardLevel(firstCard);
+        //Exception handles
+        switch (firstCard.cardID) {
+            case Catalyst.ID:
+                AbstractCard catalyst = new Catalyst();
+                CardLevelPatch.setCardLevel(catalyst,cardLevel + 1);
+                if(cards.stream().anyMatch(abstractCard -> abstractCard.upgraded)) catalyst.upgrade();
+                return catalyst;
+        }
 
-        AbstractCard baseCard = CardLibrary.getCard(cards.get(0).cardID).makeCopy();
+        AbstractCard baseCard = CardLibrary.getCard(firstCard.cardID).makeCopy();
         ChessPiece.modifyCard(baseCard, cardLevel);
         int[] diffArr = new int[8];
         Arrays.fill(diffArr,0);
