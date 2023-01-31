@@ -22,6 +22,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.green.Catalyst;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -32,6 +33,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.PotionStrings;
+import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -463,7 +465,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
                 getModID() + "Resources/localization/"+ language +"/Relic-Strings.json");
         BaseMod.loadCustomStringsFile(PotionStrings.class,
                 getModID() + "Resources/localization/"+ language +"/Potion-Strings.json");
-        BaseMod.loadCustomStringsFile(PotionStrings.class,
+        BaseMod.loadCustomStringsFile(PowerStrings.class,
                 getModID() + "Resources/localization/"+ language +"/Power-Strings.json");
     }
 
@@ -533,7 +535,13 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
                         ChessPiece.modifyCard(copy,CardLevelPatch.getCardLevel(card) - 1);
                         ChessPiece.addToAutoPlayTop(copy);
                         break;
+                    case Catalyst.ID:
+                        AbstractCard catalyst = new Catalyst();
+                        CardLevelPatch.setCardLevel(catalyst,CardLevelPatch.getCardLevel(card) - 1);
+                        if(card.upgraded) catalyst.upgrade();
+                        break;
                     case com.megacrit.cardcrawl.cards.red.Corruption.ID:
+                    case com.megacrit.cardcrawl.cards.red.Barricade.ID:
                     default:
                         break;
                 }
