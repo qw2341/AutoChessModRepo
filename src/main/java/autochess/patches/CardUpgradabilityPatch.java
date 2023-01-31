@@ -4,6 +4,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.red.BodySlam;
+import com.megacrit.cardcrawl.cards.red.Corruption;
 
 import java.util.HashSet;
 
@@ -12,6 +13,7 @@ public class CardUpgradabilityPatch {
     public static HashSet<String> exceptions = new HashSet<>();
     static {
         exceptions.add(BodySlam.ID);
+        exceptions.add(Corruption.ID);
     }
     public static SpireField<Boolean> upgradable = new SpireField<>(() -> Boolean.valueOf(true));
 

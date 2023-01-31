@@ -463,6 +463,8 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
                 getModID() + "Resources/localization/"+ language +"/Relic-Strings.json");
         BaseMod.loadCustomStringsFile(PotionStrings.class,
                 getModID() + "Resources/localization/"+ language +"/Potion-Strings.json");
+        BaseMod.loadCustomStringsFile(PotionStrings.class,
+                getModID() + "Resources/localization/"+ language +"/Power-Strings.json");
     }
 
     @Override
@@ -531,7 +533,9 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
                         ChessPiece.modifyCard(copy,CardLevelPatch.getCardLevel(card) - 1);
                         ChessPiece.addToAutoPlayTop(copy);
                         break;
-
+                    case com.megacrit.cardcrawl.cards.red.Corruption.ID:
+                    default:
+                        break;
                 }
             } else if(!CardUpgradabilityPatch.canLevelUp(card)) {
                 AbstractCard copy = CardLibrary.getCard(card.cardID).makeCopy();

@@ -1,0 +1,8 @@
+{
+  "AutoChessMod:EnergyRefund" : {
+    "NAME": "能量返还",
+    "DESCRIPTIONS": [
+      "在你打出技能牌后，获得 "
+    ]
+  }
+}

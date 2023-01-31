@@ -1,0 +1,8 @@
+{
+  "AutoChessMod:EnergyRefund" : {
+    "NAME": "Energy Refund",
+    "DESCRIPTIONS": [
+      "After you play a #ySkill, gain "
+    ]
+  }
+}
