@@ -4,6 +4,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.green.Catalyst;
+import com.megacrit.cardcrawl.cards.purple.MasterReality;
 import com.megacrit.cardcrawl.cards.red.Barricade;
 import com.megacrit.cardcrawl.cards.red.BodySlam;
 import com.megacrit.cardcrawl.cards.red.Corruption;
@@ -18,6 +19,7 @@ public class CardUpgradabilityPatch {
         exceptions.add(Corruption.ID);
         exceptions.add(Catalyst.ID);
         exceptions.add(Barricade.ID);
+        exceptions.add(MasterReality.ID);
     }
     public static SpireField<Boolean> upgradable = new SpireField<>(() -> Boolean.valueOf(true));
 

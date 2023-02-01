@@ -4,5 +4,12 @@
     "DESCRIPTIONS": [
       "在你打出技能牌后，获得 "
     ]
+  },
+  "AutoChessMod:RealityMastery" : {
+    "NAME": "现实主宰",
+    "DESCRIPTIONS": [
+      "战斗中生成的卡牌消耗减少 #b",
+      " 点。"
+    ]
   }
 }

@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.CardQueueItem;
 import com.megacrit.cardcrawl.cards.green.Catalyst;
+import com.megacrit.cardcrawl.cards.purple.MasterReality;
 import com.megacrit.cardcrawl.cards.red.Barricade;
 import com.megacrit.cardcrawl.cards.red.Corruption;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -248,6 +249,9 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
                 break;
             case Corruption.ID:
                 baseCard.rawDescription += CardLevelPatch.TEXT[2] + CardLevelPatch.getLeveledPowerAmount(baseCard) + " [E] " + LocalizedStrings.PERIOD;
+                break;
+            case MasterReality.ID:
+                baseCard.rawDescription += CardLevelPatch.TEXT[3] + CardLevelPatch.getLeveledPowerAmount(baseCard) + " " + LocalizedStrings.PERIOD;
                 break;
         }
         baseCard.initializeDescription();

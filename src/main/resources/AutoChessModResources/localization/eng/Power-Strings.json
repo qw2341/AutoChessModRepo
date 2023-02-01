@@ -4,5 +4,12 @@
     "DESCRIPTIONS": [
       "After you play a #ySkill, gain "
     ]
+  },
+  "AutoChessMod:RealityMastery" : {
+    "NAME": "Reality Mastery",
+    "DESCRIPTIONS": [
+      "Cards created in combat costs #b",
+      " less."
+    ]
   }
 }
