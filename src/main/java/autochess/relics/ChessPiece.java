@@ -345,7 +345,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     public void update() {
         super.update();
 
-        if(AutoChessMod.enableAutoBattle && AbstractDungeon.isPlayerInDungeon() && ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp && !AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
+        if(AutoChessMod.enableAutoBattle && AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.currMapNode != null && ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp && !AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
             autoplayHandTopCard();
         }
     }
