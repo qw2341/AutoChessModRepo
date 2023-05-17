@@ -14,8 +14,6 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.OnObtainCard;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
@@ -39,11 +37,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.watcher.MantraPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rewards.RewardSave;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
-import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 
 @SpireInitializer
-public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, PreUpdateSubscriber, OnCreateDescriptionSubscriber, OnStartBattleSubscriber, RelicGetSubscriber, OnPlayerTurnStartSubscriber, PostPowerApplySubscriber, OnCardUseSubscriber, PreStartGameSubscriber {
+public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber, PostInitializeSubscriber, PostDungeonInitializeSubscriber, OnCreateDescriptionSubscriber, RelicGetSubscriber, PostPowerApplySubscriber, OnCardUseSubscriber {
     public static final Logger logger = LogManager.getLogger(AutoChessMod.class.getName());
     private static final String modID = "AutoChessMod";
     private static final String BADGE_IMAGE = "AutoChessModResources/images/Badge.png";;
@@ -470,14 +464,6 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     }
 
     @Override
-    public void receivePreUpdate() {
-//        if(AbstractDungeon.isPlayerInDungeon() && ) {
-//
-//        }
-    }
-
-
-    @Override
     public void receiveEditRelics() {
         BaseMod.addRelic(new ChessPiece(), RelicType.SHARED);
         BaseMod.addRelic(new ZephrysLamp(), RelicType.SHARED);
@@ -494,10 +480,6 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         else return s;
     }
 
-    @Override
-    public void receiveOnBattleStart(AbstractRoom abstractRoom) {
-
-    }
 
     @Override
     public void receiveRelicGet(AbstractRelic abstractRelic) {
@@ -510,10 +492,7 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
     }
 
 
-    @Override
-    public void receiveOnPlayerTurnStart() {
 
-    }
 
     @Override
     public void receivePostPowerApplySubscriber(AbstractPower power, AbstractCreature target, AbstractCreature source) {
@@ -554,8 +533,4 @@ public class AutoChessMod implements EditStringsSubscriber, EditRelicsSubscriber
         }
     }
 
-    @Override
-    public void receivePreStartGame() {
-
-    }
 }
