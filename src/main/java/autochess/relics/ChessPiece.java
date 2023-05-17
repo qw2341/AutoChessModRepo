@@ -349,4 +349,9 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
             autoplayHandTopCard();
         }
     }
+
+    @Override
+    public void relicTip() {
+
+    }
 }
