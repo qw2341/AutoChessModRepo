@@ -7,6 +7,8 @@ import autochess.util.TextureLoader;
 import autochess.vfx.ShowTripleAndObtainEffect;
 import basemod.abstracts.CustomRelic;
 import basemod.abstracts.CustomSavable;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -18,6 +20,8 @@ import com.megacrit.cardcrawl.cards.red.Corruption;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
@@ -105,30 +109,52 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         return c1.cardID.equals(c2.cardID) && (CardLevelPatch.getCardLevel(c1) == CardLevelPatch.getCardLevel(c2));
     }
 
-//    @Override
-//    public void onPreviewObtainCard(AbstractCard c) {
-//        onObtainCard(c);
-//    }
-//
-//    @Override
-//    public void onObtainCard(AbstractCard c) {
-//        if(CardLevelPatch.cardLevel.get(c) > 1) {
-//            try {
-//
-//            } catch (Exception e) {
-//                AutoChessMod.logger.info("Failed to modify: " + c.cardID + " when obtaining");
-//            }
-//        }
-//    }
+    private void makeTriplesGlow(AbstractCard c, ArrayList<AbstractCard> cards) {
+        int dupes = 1;
+        boolean shouldGlow = false;
+
+        for (AbstractCard ac : cards) {
+            if (tierAndIdCheck(c,ac)) {
+                dupes++;
+            }
+            if(dupes >= ChessSave.getNumCardsForTriple()) {
+                c.glowColor = Color.GOLD;
+                c.beginGlowing();
+                shouldGlow = true;
+            }
+        }
+        if(c.isGlowing && !shouldGlow) c.stopGlowing();
+    }
+
+    @Override
+    public void onPreviewObtainCard(AbstractCard c) {
+        makeTriplesGlow(c, AbstractDungeon.player.masterDeck.group);
+    }
+
+    @Override
+    public void onObtainCard(AbstractCard c) {
+        AbstractRoom room = AbstractDungeon.getCurrRoom();
+        if(AbstractDungeon.isPlayerInDungeon() && room != null && AbstractDungeon.combatRewardScreen != null){
+            ArrayList<AbstractCard> tempDeck = new ArrayList<>(AbstractDungeon.player.masterDeck.group);
+            tempDeck.add(c);
+            for (RewardItem ri : AbstractDungeon.combatRewardScreen.rewards) {
+                if(ri.type == RewardItem.RewardType.CARD) {
+                    for (AbstractCard ac : ri.cards) {
+                        makeTriplesGlow(ac, tempDeck);
+                    }
+                }
+            }
+        }
+    }
 
 
     @Override
     public void onCardDraw(AbstractCard drawnCard) {
-        if(AutoChessMod.enableAutoBattle) {
+        if(canAutoPlay()) {
                 if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
                     addToAutoPlay(drawnCard);
                     this.counter--;
-                } else if (!AutoChessMod.limitedAutoDrawnCards) {
+                } else if (!AutoChessMod.limitedAutoDrawnCards && validMonsterTarget()) {
                     addToAutoPlay(drawnCard);
                 }
 
@@ -140,7 +166,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
             addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
             this.counter--;
-        } else if(!AutoChessMod.limitedAutoDrawnCards) {
+        } else if(!AutoChessMod.limitedAutoDrawnCards && !validMonsterTarget()) {
             addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
         }
     }
@@ -170,10 +196,8 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
 
                     AbstractDungeon.effectsQueue.add(new ShowTripleAndObtainEffect(cardsToRemove, CardGroup.CardGroupType.HAND));
                 }
-                if(AutoChessMod.enableAutoBattle) {
-                    if(!AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
-                        autoplayHandTopCard();
-                    }
+                if(canAutoPlay()) {
+                     autoplayHandTopCard();
                 }
             }
         }
@@ -345,9 +369,30 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
     public void update() {
         super.update();
 
-        if(AutoChessMod.enableAutoBattle && AbstractDungeon.isPlayerInDungeon() && AbstractDungeon.currMapNode != null && ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT) && AbstractDungeon.actionManager.actions.isEmpty() && !AbstractDungeon.isScreenUp && !AbstractDungeon.player.hand.isEmpty() && !AbstractDungeon.actionManager.turnHasEnded && AbstractDungeon.actionManager.cardQueue.isEmpty()) {
+        if(canAutoPlay()) {
             autoplayHandTopCard();
         }
+    }
+
+    public static boolean canAutoPlay() {
+        return AutoChessMod.enableAutoBattle
+                && AbstractDungeon.isPlayerInDungeon()
+                && AbstractDungeon.currMapNode != null
+                && ((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT)
+                && AbstractDungeon.actionManager.actions.isEmpty()
+                && !AbstractDungeon.isScreenUp
+                && !AbstractDungeon.player.hand.isEmpty()
+                && !AbstractDungeon.actionManager.turnHasEnded
+                && AbstractDungeon.actionManager.cardQueue.isEmpty()
+                && (AutoChessMod.limitedAutoDrawnCards || validMonsterTarget());
+    }
+
+    public static boolean validMonsterTarget() {
+        if (AbstractDungeon.getCurrRoom() == null || AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT) return false;
+        for(AbstractMonster am : AbstractDungeon.getMonsters().monsters) {
+            if(!am.isDying && !am.isEscaping  && !am.halfDead) return true;
+        }
+        return false;
     }
 
     @Override
