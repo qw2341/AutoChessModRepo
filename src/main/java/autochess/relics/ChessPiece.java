@@ -109,7 +109,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         return c1.cardID.equals(c2.cardID) && (CardLevelPatch.getCardLevel(c1) == CardLevelPatch.getCardLevel(c2));
     }
 
-    private void makeTriplesGlow(AbstractCard c, ArrayList<AbstractCard> cards) {
+    public static void makeTriplesGlow(AbstractCard c, ArrayList<AbstractCard> cards) {
         int dupes = 1;
         boolean shouldGlow = false;
 
@@ -145,6 +145,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
                 }
             }
         }
+        if(c.isGlowing) c.stopGlowing();
     }
 
 
