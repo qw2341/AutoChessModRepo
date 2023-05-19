@@ -167,7 +167,7 @@ public class ChessPiece extends CustomRelic implements CustomSavable<HashMap<Int
         if(AutoChessMod.limitedAutoDrawnCards && this.counter > 0) {
             addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
             this.counter--;
-        } else if(!AutoChessMod.limitedAutoDrawnCards && !validMonsterTarget()) {
+        } else if(!AutoChessMod.limitedAutoDrawnCards && validMonsterTarget()) {
             addToAutoPlay(AbstractDungeon.player.hand.getTopCard());
         }
     }
